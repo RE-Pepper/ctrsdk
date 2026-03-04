@@ -36,4 +36,6 @@ typedef s32 intptr_t;
 #define static_assert( COND, MSG ) typedef int __static_assert_balls[ ( COND ) ? 1 : -1 ]
 #endif
 
-#define split( S ) __attribute__( ( section( "i." #S ) ) ) S
+// without this static data cannot be referenced in the linker map
+#define split( S ) __attribute__( ( section( ".sdata_" #S ) ) ) S
+
