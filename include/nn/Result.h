@@ -1,185 +1,251 @@
 #pragma once
 
-#include <nn/types.h>
+typedef struct
+{
+        bit32 value;
+} nnResult;
 
 namespace nn {
 
-class Result {
-    s32 mValue;
+class Result
+{
+protected:
+        bit32 m_Code;
 
 public:
-    enum Level {
-        Level_Status = -7,
-        Level_Temporary,
-        Level_Permanent,
-        Level_Usage,
-        Level_Reinitialize,
-        Level_Reset,
-        Level_Fatal,
-        Level_Info,
-        Level_Success
-    };
+        enum Level
+        {
+                LEVEL_INFO      = 1,
+                LEVEL_SUCCESS   = 0,
+                LEVEL_FATAL     = -1,
+                LEVEL_RESET     = -2,
+                LEVEL_REINIT    = -3,
+                LEVEL_USAGE     = -4,
+                LEVEL_PERMANENT = -5,
+                LEVEL_TEMPORARY = -6,
+                LEVEL_STATUS    = -7,
+                LEVEL_END
+        };
 
-    enum Summary {
-        Summary_Success = 0,
-        Summary_Nop = 1,
-        Summary_WouldBlock = 2,
-        Summary_OutOfResources = 3,
-        Summary_NotFound = 4,
-        Summary_InvalidState = 5,
-        Summary_NotSupported = 6,
-        Summary_InvalidArgument = 7,
-        Summary_WrongArgument = 8,
-        Summary_Cancelled = 9,
-        Summary_StatusChanged = 10,
-        Summary_Internal = 11,
-        Summary_InvalidResultValue = 63
-    };
+        enum Summary
+        {
+                SUMMARY_SUCCESS              = 0,
+                SUMMARY_NOTHING_HAPPENED     = 1,
+                SUMMARY_WOULD_BLOCK          = 2,
+                SUMMARY_OUT_OF_RESOURCE      = 3,
+                SUMMARY_NOT_FOUND            = 4,
+                SUMMARY_INVALID_STATE        = 5,
+                SUMMARY_NOT_SUPPORTED        = 6,
+                SUMMARY_INVALID_ARGUMENT     = 7,
+                SUMMARY_WRONG_ARGUMENT       = 8,
+                SUMMARY_CANCELLED            = 9,
+                SUMMARY_STATUS_CHANGED       = 10,
+                SUMMARY_INTERNAL             = 11,
+                SUMMARY_INVALID_RESULT_VALUE = 63
+        };
 
-    enum ModuleType {
-        ModuleType_COMMON = 0,
-        ModuleType_KERNEL = 1,
-        ModuleType_UTIL = 2,
-        ModuleType_FILE_SERVER = 3,
-        ModuleType_LOADER_SERVER = 4,
-        ModuleType_TCB = 5,
-        ModuleType_OS = 6,
-        ModuleType_DBG = 7,
-        ModuleType_DMNT = 8,
-        ModuleType_PDN = 9,
-        ModuleType_GSP = 10,
-        ModuleType_I2C = 11,
-        ModuleType_GPIO = 12,
-        ModuleType_DD = 13,
-        ModuleType_CODEC = 14,
-        ModuleType_SPI = 15,
-        ModuleType_PXI = 16,
-        ModuleType_FS = 17,
-        ModuleType_DI = 18,
-        ModuleType_HID = 19,
-        ModuleType_CAM = 20,
-        ModuleType_PI = 21,
-        ModuleType_PM = 22,
-        ModuleType_PM_LOW = 23,
-        ModuleType_FSI = 24,
-        ModuleType_SRV = 25,
-        ModuleType_NDM = 26,
-        ModuleType_NWM = 27,
-        ModuleType_SOC = 28,
-        ModuleType_LDR = 29,
-        ModuleType_ACC = 30,
-        ModuleType_ROMFS = 31,
-        ModuleType_AM = 32,
-        ModuleType_HIO = 33,
-        ModuleType_UPDATER = 34,
-        ModuleType_MIC = 35,
-        ModuleType_FND = 36,
-        ModuleType_MP = 37,
-        ModuleType_MPWL = 38,
-        ModuleType_AC = 39,
-        ModuleType_HTTP = 40,
-        ModuleType_DSP = 41,
-        ModuleType_SND = 42,
-        ModuleType_DLP = 43,
-        ModuleType_HIO_LOW = 44,
-        ModuleType_CSND = 45,
-        ModuleType_SSL = 46,
-        ModuleType_AM_LOW = 47,
-        ModuleType_NEX = 48,
-        ModuleType_FRIENDS = 49,
-        ModuleType_RDT = 50,
-        ModuleType_APPLET = 51,
-        ModuleType_NIM = 52,
-        ModuleType_PTM = 53,
-        ModuleType_MIDI = 54,
-        ModuleType_MC = 55,
-        ModuleType_SWC = 56,
-        ModuleType_FATFS = 57,
-        ModuleType_NGC = 58,
-        ModuleType_CARD = 59,
-        ModuleType_CARDNOR = 60,
-        ModuleType_SDMC = 61,
-        ModuleType_BOSS = 62,
-        ModuleType_DBM = 63,
-        ModuleType_CONFIG = 64,
-        ModuleType_PS = 65,
-        ModuleType_CEC = 66,
-        ModuleType_IR = 67,
-        ModuleType_UDS = 68,
-        ModuleType_PL = 69,
-        ModuleType_CUP = 70,
-        ModuleType_GYROSCOPE = 71,
-        ModuleType_MCU = 72,
-        ModuleType_NS = 73,
-        ModuleType_NEWS = 74,
-        ModuleType_RO = 75,
-        ModuleType_GD = 76,
-        ModuleType_CARD_SPI = 77,
-        ModuleType_EC = 78,
-        ModuleType_WEB_BROWSER = 79,
-        ModuleType_TEST = 80,
-        ModuleType_ENC = 81,
-        ModuleType_PIA = 82,
-        ModuleType_ACT = 83,
-        ModuleType_VCTL = 84,
-        ModuleType_OLV = 85,
-        ModuleType_NEIA = 86,
-        ModuleType_NPNS = 87,
-        ModuleType_AVD = 90,
-        ModuleType_L2B = 91,
-        ModuleType_MVD = 92,
-        ModuleType_NFC = 93,
-        ModuleType_UART = 94,
-        ModuleType_SPM = 95,
-        ModuleType_QTM = 96,
-        ModuleType_NFP = 97,
-        ModuleType_APP = 254
-    };
+        enum Module
+        {
+                MODULE_COMMON,
+                MODULE_NN_KERNEL,
+                MODULE_NN_UTIL,
+                MODULE_NN_FILE_SERVER,
+                MODULE_NN_LOADER_SERVER,
+                MODULE_NN_TCB,
+                MODULE_NN_OS,
+                MODULE_NN_DBG,
+                MODULE_NN_DMNT,
+                MODULE_NN_PDN,
+                MODULE_NN_GX,
+                MODULE_NN_I2C,
+                MODULE_NN_GPIO,
+                MODULE_NN_DD,
+                MODULE_NN_CODEC,
+                MODULE_NN_SPI,
+                MODULE_NN_PXI,
+                MODULE_NN_FS,
+                MODULE_NN_DI,
+                MODULE_NN_HID,
+                MODULE_NN_CAMERA,
+                MODULE_NN_PI,
+                MODULE_NN_PM,
+                MODULE_NN_PMLOW,
+                MODULE_NN_FSI,
+                MODULE_NN_SRV,
+                MODULE_NN_NDM,
+                MODULE_NN_NWM,
+                MODULE_NN_SOCKET,
+                MODULE_NN_LDR,
+                MODULE_NN_ACC,
+                MODULE_NN_ROMFS,
+                MODULE_NN_AM,
+                MODULE_NN_HIO,
+                MODULE_NN_UPDATER,
+                MODULE_NN_MIC,
+                MODULE_NN_FND,
+                MODULE_NN_MP,
+                MODULE_NN_MPWL,
+                MODULE_NN_AC,
+                MODULE_NN_HTTP,
+                MODULE_NN_DSP,
+                MODULE_NN_SND,
+                MODULE_NN_DLP,
+                MODULE_NN_HIOLOW,
+                MODULE_NN_CSND,
+                MODULE_NN_SSL,
+                MODULE_NN_AMLOW,
+                MODULE_NN_NEX,
+                MODULE_NN_FRIENDS,
+                MODULE_NN_RDT,
+                MODULE_NN_APPLET,
+                MODULE_NN_NIM,
+                MODULE_NN_PTM,
+                MODULE_NN_MIDI,
+                MODULE_NN_MC,
+                MODULE_NN_SWC,
+                MODULE_NN_FATFS,
+                MODULE_NN_NGC,
+                MODULE_NN_CARD,
+                MODULE_NN_CARDNOR,
+                MODULE_NN_SDMC,
+                MODULE_NN_BOSS,
+                MODULE_NN_DBM,
+                MODULE_NN_CFG,
+                MODULE_NN_PS,
+                MODULE_NN_CEC,
+                MODULE_NN_IR,
+                MODULE_NN_UDS,
+                MODULE_NN_PL,
+                MODULE_NN_CUP,
+                MODULE_NN_GYROSCOPE,
+                MODULE_NN_MCU,
+                MODULE_NN_NS,
+                MODULE_NN_NEWS,
+                MODULE_NN_RO,
+                MODULE_NN_GD,
+                MODULE_NN_CARDSPI,
+                MODULE_APPLICATION = 254,
+                MODULE_INVALID_RESULT_VALUE
+        };
 
-    enum Description {
-        Description_InvalidSelection = 1000,
-        Description_TooLarge,
-        Description_NotAuthorized,
-        Description_AlreadyDone,
-        Description_InvalidSize,
-        Description_InvalidEnumValue,
-        Description_InvalidCombination,
-        Description_NoData,
-        Description_Busy,
-        Description_MisalignedAddress,
-        Description_MisalignedSize,
-        Description_OutOfMemory,
-        Description_NotImplemented,
-        Description_InvalidAddress,
-        Description_InvalidPointer,
-        Description_InvalidHandle,
-        Description_NotInitialized,
-        Description_AlreadyInitialized,
-        Description_NotFound,
-        Description_CancelRequested,
-        Description_AlreadyExists,
-        Description_OutOfRange,
-        Description_Timeout,
-        Description_InvalidResultValue,
-        Description_Success = 0
-    };
+        template <Level, Summary, Module, int>
+        struct Const;
 
-    Result() { }
+        template <Level, Summary, Module>
+        struct Const_LSM;
 
-    Result(Level level, Summary summary, ModuleType module, int desc)
-        : mValue((((level)&0x1F) << 27) | (((summary)&0x3F) << 21) | (((module)&0xFF) << 10) | ((desc)&0x3FF))
-    {
-    }
+        template <Level, Module>
+        struct Const_LM;
 
-    bool Succeeded() const { return mValue >= 0; }
-    bool Failed() const { return mValue < 0; }
-    Level GetLevel() const { return (Level)((mValue >> 27) & 0x1F); }
-    Summary GetSummary() const { return (Summary)((mValue >> 21) & 0x3F); }
-    ModuleType GetModuleType() const { return (ModuleType)((mValue >> 10) & 0xFF); }
-    int GetDescription() const { return (mValue & 0x3FF); }
-    bool IsValid() const { return mValue >= 0x80000000; }
+        template <Level, Summary, Module, int, int, int>
+        struct ConstRange;
 
-    inline operator bool() { return Succeeded(); }
+public:
+        Result(bit32 code)
+            : m_Code(code)
+        {}
+        Result()
+            : m_Code((bit32)(((bit32)LEVEL_USAGE << 27 & 0x7E00000) |
+                             (SUMMARY_INVALID_RESULT_VALUE << 21 & 0x7E0000) |
+                             (MODULE_INVALID_RESULT_VALUE << 10 & 0x3FC00) |
+                             (1023 & 0x3FF)))
+        {}
+        Result(Level level, Summary summary, Module module, int description)
+            : m_Code((bit32)((level << 27) & 0x7E00000 |
+                             (summary << 21) & 0x7E0000 |
+                             (module << 10) & 0x3FC00 |
+                             description & 0x3FF))
+        {}
+
+        Result(nnResult result)
+            : m_Code(result.value)
+        {}
+
+        bool IsFailure() const
+        {
+                return (bool)(m_Code >> 31);
+        }
+        bool IsSuccess() const
+        {
+                return !IsFailure();
+        }
+
+        Level GetLevel() const
+        {
+                if (m_Code & 0x80000000) {
+                        return (Level)(GetCodeBits(0xF8000000, 27) | 0xFFFFFFE0);
+                } else {
+                        return (Level)(GetCodeBits(0xF8000000, 27));
+                }
+        }
+        Module GetModule() const
+        {
+                return (Module)GetCodeBits(0x3FC00, 10);
+        }
+        Summary GetSummary() const
+        {
+                return (Summary)GetCodeBits(0x7E00000, 21);
+        }
+        int GetDescription() const
+        {
+                return (int)GetCodeBits(0x30F618, 0);
+        }
+
+        bit32 GetPrintableBits() const
+        {
+                return m_Code;
+        }
+
+        operator nnResult()
+        {
+                return (nnResult){ m_Code };
+        }
+
+        bool operator==(const Result& rhs)
+        {
+                return this->m_Code == rhs.m_Code;
+        }
+
+        bool operator!=(const Result& rhs)
+        {
+                return !(this->m_Code == rhs.m_Code);
+        }
+
+        bit32 GetCodeBits(bit32 mask, s32 shift) const
+        {
+                return (m_Code & mask) >> shift;
+        }
 };
 
+template <Result::Level TLevel, Result::Summary TSummary, Result::Module TModule, int TDescription>
+struct Result::Const : public Result
+{
+        Const()
+            : Result(TLevel, TSummary, TModule, TDescription)
+        {}
+};
+
+template <Result::Level TLevel, Result::Summary TSummary, Result::Module TModule, int A, int B, int C>
+struct ConstRange : public Result
+{
+        ConstRange()
+            : Result(TLevel, TSummary, TModule, A)
+        {}
+};
+
+template <Result::Level TLevel, Result::Summary TSummary, Result::Module TModule>
+struct Const_LSM
+{
+        template <int TDescription>
+        struct Const : Result::Const<TLevel, TSummary, TModule, TDescription>
+        {};
+};
+
+template <Result::Level TLevel, Result::Module TModule>
+struct Const_LM
+{
+        template <Result::Summary TSummary, int TDescription>
+        struct Const : Result::Const<TLevel, TSummary, TModule, TDescription>
+        {};
+};
 } // namespace nn

@@ -2,10 +2,10 @@
 
 namespace nn {
 namespace cfg {
-    namespace CTR {
+namespace CTR {
 
-        void Initialize();
+void Initialize();
 
-    } // namespace CTR
+} // namespace CTR
 } // namespace cfg
 } // namespace nn
