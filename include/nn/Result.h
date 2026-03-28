@@ -1,5 +1,6 @@
 #pragma once
 
+#include <nn/cfg/CTR/detail/cfg_DataStructures.h> // TODO: REMOVE
 typedef struct
 {
         bit32 value;

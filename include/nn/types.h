@@ -3,7 +3,6 @@
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
-
 // Base type definitions
 
 typedef unsigned char      u8;  // 51
@@ -55,18 +54,24 @@ struct ProductInfo
 
 // Project helpers
 
+#ifndef NN_PACK
+#define NN_PACK __attribute__((__packed__))
+#endif
+
 #ifndef nullptr
 #define nullptr NULL
 #endif
 
 #endif
 
+// Assertion
 #ifndef static_assert
-#define static_assert(COND, MSG) typedef int __static_assert_balls[(COND) ? 1 : -1]
+#define static_assert(COND, MSG) typedef int __static_assert_failed[(COND) ? 1 : -1]
 #endif
+#define static_assert_(COND) static_assert(COND, #COND)
 
 // without this static data cannot be referenced in the linker map
-#define staticd(S) __attribute__((section(".sdata_" #S))) S
+#define staticd(S) static __attribute__((section(".sdata_" #S))) S
 // same for assembly functions
 #define asm(S) __asm __attribute__((section("i." #S))) S
 

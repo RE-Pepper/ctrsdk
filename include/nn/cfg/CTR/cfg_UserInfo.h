@@ -13,7 +13,7 @@ struct UserName
 struct Birthday
 {
         s8 month;
-        sk day;
+        s8 day;
 };
 
 struct SimpleAddress
