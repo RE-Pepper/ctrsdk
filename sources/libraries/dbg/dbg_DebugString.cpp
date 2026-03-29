@@ -3,9 +3,8 @@ namespace dbg {
 namespace detail {
 
 namespace {
-    var()
 }
 
-}
+} // namespace detail
 } // namespace dbg
 } // namespace nn

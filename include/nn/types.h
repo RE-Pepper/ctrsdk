@@ -52,16 +52,28 @@ struct ProductInfo
 
 } // namespace nn
 
-// Project helpers
+// C++03 didnt have nullptr yet
+#ifndef nullptr
+#define nullptr NULL
+#endif
+
+#endif
+
+// Macros
 
 #ifndef NN_PACK
 #define NN_PACK __attribute__((__packed__))
 #endif
 
-#ifndef nullptr
-#define nullptr NULL
+#ifndef NN_UNUSED
+#define NN_UNUSED __attribute__((unused))
 #endif
 
+// Project helpers
+
+#ifndef RP_SHUTUP
+#define RP_SHUTUP \
+        _Pragma("diag_suppress 177,550,940") 
 #endif
 
 // Assertion

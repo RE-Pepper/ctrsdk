@@ -1,6 +1,8 @@
 #include <nn/dbg/dbg_Break.h>
 #include <nn/svc/svc_Api.h>
 
+RP_SHUTUP
+
 namespace nn {
 namespace dbg {
 namespace {
