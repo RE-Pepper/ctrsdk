@@ -1,5 +1,5 @@
 #include <nn/dbg/dbg_Break.h>
-#include <nn/svc/svc_Api.h>
+#include <nn/svc/svc_StubDbg.h>
 
 RP_SHUTUP
 
