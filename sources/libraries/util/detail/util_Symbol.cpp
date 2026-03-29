@@ -2,7 +2,7 @@
 
 extern "C" {
 
-void asm(nnutilReferSymbol_)(const char* sym, ...)
+void asm (nnutilReferSymbol_) (const char* sym)
 {
         bx lr;
 }

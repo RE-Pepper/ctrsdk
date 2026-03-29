@@ -73,7 +73,7 @@ struct ProductInfo
 
 #ifndef RP_SHUTUP
 #define RP_SHUTUP \
-        _Pragma("diag_suppress 177,550,940") 
+        _Pragma("diag_suppress 177,550,940")
 #endif
 
 // Assertion
@@ -82,8 +82,16 @@ struct ProductInfo
 #endif
 #define static_assert_(COND) static_assert(COND, #COND)
 
+#ifdef __arm__
+
 // without this static data cannot be referenced in the linker map
 #define var(Type, Name) static Type __attribute__((section(".sdata_" #Name))) Name
 // same for assembly functions
-#define asm(S) __asm __attribute__((section("i." #S))) S
+#define asm_ext(Name, Sect) __asm __attribute__((section(Sect))) Name
+#define asm(Name) asm_ext(Name, "i." #Name)
 
+#else
+#define var(Type, Name) Type Name
+#define asm_ext(Name, Sect) Name
+#define asm(Name) Name
+#endif
