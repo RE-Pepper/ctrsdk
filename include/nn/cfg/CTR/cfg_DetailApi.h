@@ -1,5 +1,6 @@
 #pragma once
 
+#include <nn/Handle.h>
 #include <nn/Result.h>
 
 namespace nn {
@@ -15,6 +16,12 @@ typedef enum _IPCPortType
         PORT_CFG_NOR    = 3,
         NUM_OF_IPC_PORT = 4
 } IPCPortType;
+
+Result Initialize();
+Result InitializeProperPort(IPCPortType* pPortType);
+
+void Finalize();
+void FinalizeProperPort(IPCPortType portType);
 
 Result GetConfig(void* pData, size_t size, bit32 key);
 

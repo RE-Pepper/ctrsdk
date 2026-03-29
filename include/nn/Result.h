@@ -1,10 +1,17 @@
 #pragma once
 
-#include <nn/cfg/CTR/detail/cfg_DataStructures.h> // TODO: REMOVE
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct
 {
         bit32 value;
 } nnResult;
+
+#ifdef __cplusplus
+}
+#endif
 
 namespace nn {
 
@@ -129,6 +136,35 @@ public:
                 MODULE_INVALID_RESULT_VALUE
         };
 
+        enum Description
+        {
+                DESCRIPTION_SUCCESS              = 0,
+                DESCRIPTION_INVALID_SELECTION    = 1000,
+                DESCRIPTION_TOO_LARGE            = 1001,
+                DESCRIPTION_NOT_AUTHORIZED       = 1002,
+                DESCRIPTION_ALREADY_DONE         = 1003,
+                DESCRIPTION_INVALID_SIZE         = 1004,
+                DESCRIPTION_INVALID_ENUM_VALUE   = 1005,
+                DESCRIPTION_INVALID_COMBINATION  = 1006,
+                DESCRIPTION_NO_DATA              = 1007,
+                DESCRIPTION_BUSY                 = 1008,
+                DESCRIPTION_MISALIGNED_ADDRESS   = 1009,
+                DESCRIPTION_MISALIGNED_SIZE      = 1010,
+                DESCRIPTION_OUT_OF_MEMORY        = 1011,
+                DESCRIPTION_NOT_IMPLEMENTED      = 1012,
+                DESCRIPTION_INVALID_ADDRESS      = 1013,
+                DESCRIPTION_INVALID_POINTER      = 1014,
+                DESCRIPTION_INVALID_HANDLE       = 1015,
+                DESCRIPTION_NOT_INITIALIZED      = 1016,
+                DESCRIPTION_ALREADY_INITIALIZED  = 1017,
+                DESCRIPTION_NOT_FOUND            = 1018,
+                DESCRIPTION_CANCEL_REQUESTED     = 1019,
+                DESCRIPTION_ALREADY_EXISTS       = 1020,
+                DESCRIPTION_OUT_OF_RANGE         = 1021,
+                DESCRIPTION_TIMEOUT              = 1022,
+                DESCRIPTION_INVALID_RESULT_VALUE = 1023
+        };
+
         template <Level, Summary, Module, int>
         struct Const;
 
@@ -146,16 +182,16 @@ public:
             : m_Code(code)
         {}
         Result()
-            : m_Code((bit32)(((bit32)LEVEL_USAGE << 27 & 0x7E00000) |
-                             (SUMMARY_INVALID_RESULT_VALUE << 21 & 0x7E0000) |
-                             (MODULE_INVALID_RESULT_VALUE << 10 & 0x3FC00) |
+            : m_Code((bit32)((((bit32)LEVEL_USAGE << 27) & 0x7E00000) |
+                             ((SUMMARY_INVALID_RESULT_VALUE << 21) & 0x7E0000) |
+                             ((MODULE_INVALID_RESULT_VALUE << 10) & 0x3FC00) |
                              (1023 & 0x3FF)))
         {}
         Result(Level level, Summary summary, Module module, int description)
             : m_Code((bit32)((level << 27) & 0x7E00000 |
                              (summary << 21) & 0x7E0000 |
                              (module << 10) & 0x3FC00 |
-                             description & 0x3FF))
+                             (description) & 0x3FF))
         {}
 
         Result(nnResult result)
@@ -225,15 +261,20 @@ struct Result::Const : public Result
             : Result(TLevel, TSummary, TModule, TDescription)
         {}
 };
-
-template <Result::Level TLevel, Result::Summary TSummary, Result::Module TModule, int A, int B, int C>
+template <Result::Level TLevel, Result::Summary TSummary, Result::Module TModule, int TDescription, int A, int B>
 struct ConstRange : public Result
 {
         ConstRange()
-            : Result(TLevel, TSummary, TModule, A)
+            : Result(TLevel, TSummary, TModule, TDescription)
         {}
-};
 
+        static bool Includes(Result result)
+        {
+                return result.GetModule() == TModule && result.GetDescription() >= A && result.GetDescription() <= B;
+        }
+        friend bool operator<=(Result lhs, ConstRange) { return ConstRange::Includes(lhs); }
+        friend bool operator>=(ConstRange, Result rhs) { return ConstRange::Includes(rhs); }
+};
 template <Result::Level TLevel, Result::Summary TSummary, Result::Module TModule>
 struct Const_LSM
 {
@@ -241,7 +282,6 @@ struct Const_LSM
         struct Const : Result::Const<TLevel, TSummary, TModule, TDescription>
         {};
 };
-
 template <Result::Level TLevel, Result::Module TModule>
 struct Const_LM
 {
@@ -249,4 +289,60 @@ struct Const_LM
         struct Const : Result::Const<TLevel, TSummary, TModule, TDescription>
         {};
 };
+
+// Result creators
+#define NN_MAKE_CONST_RESULT(result, level, summary, module, description) \
+        typedef nn::Result::Const<(level), (summary), (module), (description)> name
+#define NN_MAKE_CONST_RANGE_RESULT(result, level, summary, module, description, a, b) \
+        typedef nn::Result::Const<(level), (summary), (module), (description), (a), (b)> name
+
+#define NN_MAKE_CONST_LSM_RESULT(result, sub, description) \
+        typedef nn::Result::Const<(level), (summary), (module), (description)> name
+#define NN_MAKE_CONST_LSM_SUB(sub, level, summary, module) \
+        typedef nn::Result::Const<(level), (summary), (module), (description)> name
+
+#define NN_MAKE_CONST_LM_RESULT(result, sub, summary, description) \
+        typedef nn::Result::Const<(level), (summary), (module), (description)> name
+#define NN_MAKE_CONST_LM_SUB(sub, level, summary) \
+        typedef nn::Result::Const<(level), (summary), (module), (description)> name
+
+// 565
+NN_MAKE_CONST_RESULT(ResultSuccess, Result::LEVEL_SUCCESS, Result::SUMMARY_SUCCESS, Result::MODULE_COMMON, Result::DESCRIPTION_SUCCESS);
+
+// clang-format off
+static inline Result MakeInfoResult(Result::Summary summary, Result::Module module, int description) {// 585
+        return Result(Result::LEVEL_INFO, summary, module, description);
+} static inline Result MakeFatalResult(Result::Summary summary, Result::Module module, int description) {
+        return Result(Result::LEVEL_FATAL, summary, module, description);
+} static inline Result MakeResetResult(Result::Summary summary, Result::Module module, int description) {
+        return Result(Result::LEVEL_RESET, summary, module, description);
+} static inline Result MakeReinitResult(Result::Summary summary, Result::Module module, int description) {
+        return Result(Result::LEVEL_REINIT, summary, module, description);
+} static inline Result MakeUsageResult(Result::Summary summary, Result::Module module, int description) {// 593
+        return Result(Result::LEVEL_USAGE, summary, module, description);
+} static inline Result MakePermanentResult(Result::Summary summary, Result::Module module, int description) { // 595
+        return Result(Result::LEVEL_PERMANENT, summary, module, description);
+} static inline Result MakeTemporaryResult(Result::Summary summary, Result::Module module, int description) {
+        return Result(Result::LEVEL_TEMPORARY, summary, module, description);
+} static inline Result MakeStatusResult(Result::Summary summary, Result::Module module, int description) {
+        return Result(Result::LEVEL_STATUS, summary, module, description);
+}
+// clang-format on
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int nnResultFailureHandler(nnResult result, const char* filename, int lineno, const char* fmt, ...);
+int nnResultTFailureHandler(nnResult result, const char* filename, int lineno, const char* fmt, ...);
+
+int nnResultPanicHandler(nnResult result, const char* filename, int lineno, const char* fmt, ...);
+int nnResultTPanicHandler(nnResult result, const char* filename, int lineno, const char* fmt, ...);
+
+typedef void (*nnResultHandlerImpl)(nnResult result, const char* filename, int lineno, const char* fmt, va_list vlist); // 606
+
+#ifdef __cplusplus
+}
+#endif
+
 } // namespace nn

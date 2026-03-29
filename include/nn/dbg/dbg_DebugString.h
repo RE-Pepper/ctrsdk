@@ -1,11 +1,11 @@
 #pragma once
 
-#include <nn/dbg/dbg_Types.h>
-
+#ifdef __cplusplus
 namespace nn {
 namespace dbg {
+namespace detail {
 
-    void Break(BreakReason reason);
-
+}
 } // namespace dbg
 } // namespace nn
+#endif

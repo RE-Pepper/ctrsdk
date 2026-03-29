@@ -71,7 +71,7 @@ struct ProductInfo
 #define static_assert_(COND) static_assert(COND, #COND)
 
 // without this static data cannot be referenced in the linker map
-#define staticd(S) static __attribute__((section(".sdata_" #S))) S
+#define var(Type, Name) static Type __attribute__((section(".sdata_" #Name))) Name
 // same for assembly functions
 #define asm(S) __asm __attribute__((section("i." #S))) S
 
