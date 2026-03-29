@@ -1,5 +1,7 @@
 #include <nn/Result.h>
 
+RP_SHUTUP
+
 void nnosGetProcessId(bit32* pOut) // 23
 {
         // TODO
