@@ -37,8 +37,8 @@ void asm(nninitRegion)()
         ldr   r1, = __cpp(Image$$ZI$$ZI$$Limit);
         mov   r2, #0;
 
-run // noformat
-        cmp   r0, r1; // noformat
+run //nf
+        cmp   r0, r1; //nf
         strcc r2, [r0], #4;
         bcc   run;
         bx    lr;
