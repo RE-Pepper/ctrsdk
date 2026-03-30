@@ -3,33 +3,28 @@
 #include <nn/Result.h>
 #include <nn/dbg/dbg_Enum.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef __cplusplus
 
-nnResult nndbgBreak(int reason);
-void     nndbgPanic();
-void     nndbgBreakWithMessage_(nndbgBreakReason reason, const char* filename, int lineno, const char* fmt, ...);
-void     nndbgBreakWithTMessage_(nndbgBreakReason reason, const char* filename, int lineno, const char* fmt, ...);
-void     nndbgBreakWithResultMessage_(nndbgBreakReason reason, nnResult result, const char* filename, int lineno, const char* fmt, ...);
-void     nndbgBreakWithResultTMessage_(nndbgBreakReason reason, nnResult result, const char* filename, int lineno, const char* fmt, ...);
+nnResult nndbgBreak (nndbgBreakReason reason);
+void     nndbgPanic ();
+void     nndbgBreakWithMessage_ (nndbgBreakReason reason, const char* filename, int lineno, const char* fmt, ...);
+void     nndbgBreakWithTMessage_ (nndbgBreakReason reason, const char* filename, int lineno, const char* fmt, ...);
+void     nndbgBreakWithResultMessage_ (nndbgBreakReason reason, nnResult result, const char* filename, int lineno, const char* fmt, ...);
+void     nndbgBreakWithResultTMessage_ (nndbgBreakReason reason, nnResult result, const char* filename, int lineno, const char* fmt, ...);
 
-#ifdef __cplusplus
-}
-#endif
+#else
 
-#ifdef __cplusplus
 namespace nn {
 namespace dbg {
 
-typedef void (*BreakHandler)(BreakReason reason, const Result* pResult, const char* filename, int lineno, const char* message, va_list vlist);
+typedef void (*BreakHandler) (BreakReason reason, const Result* pResult, const char* filename, int lineno, const char* message, va_list vlist);
 
-Result Break(BreakReason reason);
-void   Panic();
+Result Break (BreakReason reason);
+void   Panic ();
 
-inline Result Break()
+inline Result Break ()
 {
-        return Break(BREAK_REASON_PANIC);
+        return Break (BREAK_REASON_PANIC);
 }
 
 } // namespace dbg

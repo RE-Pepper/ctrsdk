@@ -132,6 +132,11 @@ public:
                 MODULE_NN_RO,
                 MODULE_NN_GD,
                 MODULE_NN_CARDSPI,
+                MODULE_NN_EC,
+                MODULE_NN_WEBBRS,
+                MODULE_NN_TEST,
+                MODULE_NN_ENC,
+                MODULE_NN_PIA,
                 MODULE_APPLICATION = 254,
                 MODULE_INVALID_RESULT_VALUE
         };
@@ -162,7 +167,7 @@ public:
                 DESCRIPTION_ALREADY_EXISTS       = 1020,
                 DESCRIPTION_OUT_OF_RANGE         = 1021,
                 DESCRIPTION_TIMEOUT              = 1022,
-                DESCRIPTION_INVALID_RESULT_VALUE = 1023
+                DESCRIPTION_INVALID_RESULT_VALUE = 1023,
         };
 
         template <Level, Summary, Module, int>
@@ -178,77 +183,77 @@ public:
         struct ConstRange;
 
 public:
-        Result(bit32 code)
-            : m_Code(code)
+        Result (bit32 code)
+            : m_Code (code)
         {}
-        Result()
-            : m_Code((bit32)((((bit32)LEVEL_USAGE << 27) & 0x7E00000) |
-                             ((SUMMARY_INVALID_RESULT_VALUE << 21) & 0x7E0000) |
-                             ((MODULE_INVALID_RESULT_VALUE << 10) & 0x3FC00) |
-                             (1023 & 0x3FF)))
+        Result ()
+            : m_Code ((bit32)((((bit32)LEVEL_USAGE << 27) & 0x7E00000) |
+                              ((SUMMARY_INVALID_RESULT_VALUE << 21) & 0x7E0000) |
+                              ((MODULE_INVALID_RESULT_VALUE << 10) & 0x3FC00) |
+                              (1023 & 0x3FF)))
         {}
-        Result(Level level, Summary summary, Module module, int description)
-            : m_Code((bit32)((level << 27) & 0x7E00000 |
-                             (summary << 21) & 0x7E0000 |
-                             (module << 10) & 0x3FC00 |
-                             (description) & 0x3FF))
-        {}
-
-        Result(nnResult result)
-            : m_Code(result.value)
+        Result (Level level, Summary summary, Module module, int description)
+            : m_Code ((bit32)((level << 27) & 0x7E00000 |
+                              (summary << 21) & 0x7E0000 |
+                              (module << 10) & 0x3FC00 |
+                              (description) & 0x3FF))
         {}
 
-        bool IsFailure() const
+        Result (nnResult result)
+            : m_Code (result.value)
+        {}
+
+        bool IsFailure () const
         {
                 return (bool)(m_Code >> 31);
         }
-        bool IsSuccess() const
+        bool IsSuccess () const
         {
-                return !IsFailure();
+                return !IsFailure ();
         }
 
-        Level GetLevel() const
+        Level GetLevel () const
         {
                 if (m_Code & 0x80000000) {
-                        return (Level)(GetCodeBits(0xF8000000, 27) | 0xFFFFFFE0);
+                        return (Level)(GetCodeBits (0xF8000000, 27) | 0xFFFFFFE0);
                 } else {
-                        return (Level)(GetCodeBits(0xF8000000, 27));
+                        return (Level)(GetCodeBits (0xF8000000, 27));
                 }
         }
-        Module GetModule() const
+        Module GetModule () const
         {
-                return (Module)GetCodeBits(0x3FC00, 10);
+                return (Module)GetCodeBits (0x3FC00, 10);
         }
-        Summary GetSummary() const
+        Summary GetSummary () const
         {
-                return (Summary)GetCodeBits(0x7E00000, 21);
+                return (Summary)GetCodeBits (0x7E00000, 21);
         }
-        int GetDescription() const
+        int GetDescription () const
         {
-                return (int)GetCodeBits(0x30F618, 0);
+                return (int)GetCodeBits (0x30F618, 0);
         }
 
-        bit32 GetPrintableBits() const
+        bit32 GetPrintableBits () const
         {
                 return m_Code;
         }
 
-        operator nnResult()
+        operator nnResult ()
         {
                 return (nnResult){ m_Code };
         }
 
-        bool operator==(const Result& rhs)
+        bool operator== (const Result& rhs)
         {
                 return this->m_Code == rhs.m_Code;
         }
 
-        bool operator!=(const Result& rhs)
+        bool operator!= (const Result& rhs)
         {
                 return !(this->m_Code == rhs.m_Code);
         }
 
-        bit32 GetCodeBits(bit32 mask, s32 shift) const
+        bit32 GetCodeBits (bit32 mask, s32 shift) const
         {
                 return (m_Code & mask) >> shift;
         }
@@ -257,23 +262,23 @@ public:
 template <Result::Level TLevel, Result::Summary TSummary, Result::Module TModule, int TDescription>
 struct Result::Const : public Result
 {
-        Const()
-            : Result(TLevel, TSummary, TModule, TDescription)
+        Const ()
+            : Result (TLevel, TSummary, TModule, TDescription)
         {}
 };
 template <Result::Level TLevel, Result::Summary TSummary, Result::Module TModule, int TDescription, int A, int B>
 struct ConstRange : public Result
 {
-        ConstRange()
-            : Result(TLevel, TSummary, TModule, TDescription)
+        ConstRange ()
+            : Result (TLevel, TSummary, TModule, TDescription)
         {}
 
-        static bool Includes(Result result)
+        static bool Includes (Result result)
         {
-                return result.GetModule() == TModule && result.GetDescription() >= A && result.GetDescription() <= B;
+                return result.GetModule () == TModule && result.GetDescription () >= A && result.GetDescription () <= B;
         }
-        friend bool operator<=(Result lhs, ConstRange) { return ConstRange::Includes(lhs); }
-        friend bool operator>=(ConstRange, Result rhs) { return ConstRange::Includes(rhs); }
+        friend bool operator<= (Result lhs, ConstRange) { return ConstRange::Includes (lhs); }
+        friend bool operator>= (ConstRange, Result rhs) { return ConstRange::Includes (rhs); }
 };
 template <Result::Level TLevel, Result::Summary TSummary, Result::Module TModule>
 struct Const_LSM
@@ -307,7 +312,7 @@ struct Const_LM
         typedef nn::Result::Const<(level), (summary), (module), (description)> name
 
 // 565
-NN_MAKE_CONST_RESULT(ResultSuccess, Result::LEVEL_SUCCESS, Result::SUMMARY_SUCCESS, Result::MODULE_COMMON, Result::DESCRIPTION_SUCCESS);
+NN_MAKE_CONST_RESULT (ResultSuccess, Result::LEVEL_SUCCESS, Result::SUMMARY_SUCCESS, Result::MODULE_COMMON, Result::DESCRIPTION_SUCCESS);
 
 // clang-format off
 static inline Result MakeInfoResult(Result::Summary summary, Result::Module module, int description) {// 585
@@ -333,13 +338,13 @@ static inline Result MakeInfoResult(Result::Summary summary, Result::Module modu
 extern "C" {
 #endif
 
-int nnResultFailureHandler(nnResult result, const char* filename, int lineno, const char* fmt, ...);
-int nnResultTFailureHandler(nnResult result, const char* filename, int lineno, const char* fmt, ...);
+int nnResultFailureHandler (nnResult result, const char* filename, int lineno, const char* fmt, ...);
+int nnResultTFailureHandler (nnResult result, const char* filename, int lineno, const char* fmt, ...);
 
-int nnResultPanicHandler(nnResult result, const char* filename, int lineno, const char* fmt, ...);
-int nnResultTPanicHandler(nnResult result, const char* filename, int lineno, const char* fmt, ...);
+int nnResultPanicHandler (nnResult result, const char* filename, int lineno, const char* fmt, ...);
+int nnResultTPanicHandler (nnResult result, const char* filename, int lineno, const char* fmt, ...);
 
-typedef void (*nnResultHandlerImpl)(nnResult result, const char* filename, int lineno, const char* fmt, va_list vlist); // 606
+typedef void (*nnResultHandlerImpl) (nnResult result, const char* filename, int lineno, const char* fmt, va_list vlist); // 606
 
 #ifdef __cplusplus
 }
