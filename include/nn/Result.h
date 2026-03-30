@@ -240,7 +240,8 @@ public:
 
         operator nnResult ()
         {
-                return (nnResult){ m_Code };
+                nnResult result = { m_Code };
+                return result;
         }
 
         bool operator== (const Result& rhs)
@@ -297,19 +298,19 @@ struct Const_LM
 
 // Result creators
 #define NN_MAKE_CONST_RESULT(result, level, summary, module, description) \
-        typedef nn::Result::Const<(level), (summary), (module), (description)> name
+        typedef nn::Result::Const<(level), (summary), (module), (description)> result
 #define NN_MAKE_CONST_RANGE_RESULT(result, level, summary, module, description, a, b) \
-        typedef nn::Result::Const<(level), (summary), (module), (description), (a), (b)> name
+        typedef nn::Result::Const<(level), (summary), (module), (description), (a), (b)> result
 
 #define NN_MAKE_CONST_LSM_RESULT(result, sub, description) \
-        typedef nn::Result::Const<(level), (summary), (module), (description)> name
+        typedef sub::Const<(description)> result
 #define NN_MAKE_CONST_LSM_SUB(sub, level, summary, module) \
-        typedef nn::Result::Const<(level), (summary), (module), (description)> name
+        typedef ::nn::Result::Const_LSM<(level), (summary), (module)> sub
 
 #define NN_MAKE_CONST_LM_RESULT(result, sub, summary, description) \
-        typedef nn::Result::Const<(level), (summary), (module), (description)> name
-#define NN_MAKE_CONST_LM_SUB(sub, level, summary) \
-        typedef nn::Result::Const<(level), (summary), (module), (description)> name
+        typedef sub::Const<(summary), (description)> result
+#define NN_MAKE_CONST_LM_SUB(sub, level, module) \
+        typedef ::nn::Result::Const_LM<(level), (module)> sub
 
 // 565
 NN_MAKE_CONST_RESULT (ResultSuccess, Result::LEVEL_SUCCESS, Result::SUMMARY_SUCCESS, Result::MODULE_COMMON, Result::DESCRIPTION_SUCCESS);

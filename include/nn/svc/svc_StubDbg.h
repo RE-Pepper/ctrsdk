@@ -6,8 +6,8 @@
 namespace nn {
 namespace svc {
 
-Result Break(nn::dbg::BreakReason reason);
-Result OutputDebugString(void const* data, int length);
+Result Break (nn::dbg::BreakReason reason);
+Result OutputDebugString (void const* data, int length);
 
 } // namespace svc
 } // namespace nn

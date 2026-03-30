@@ -94,7 +94,7 @@ public:
         template <typename UpdateFunc>
         bool AtomicUpdateConditional (UpdateFunc& func)
         {
-                return ARMv6::Interlocked::AtomicUpdate (&m_v, func);
+                return Interlocked::AtomicUpdate (&m_v, func);
         }
 };
 

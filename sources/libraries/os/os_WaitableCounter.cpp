@@ -12,11 +12,15 @@ void WaitableCounter::Initialize ()
         if (s_Handle.value == INVALID_HANDLE_VALUE.value) {
                 Handle h;
                 Result ret = svc::CreateAddressArbiter (&h);
-                NN_ASSERT_SDK_RESULT (ret);
+                NN_ASSERT_SDK (ret.IsSuccess ());
                 if (ret.IsSuccess ()) {
                         s_Handle = h;
                 }
         }
+}
+void WaitableCounter::Finalize ()
+{
+        // UNUSED
 }
 
 } // namespace os

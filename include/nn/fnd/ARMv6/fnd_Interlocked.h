@@ -75,7 +75,7 @@ public:
                 typename nn::util::enable_if<sizeof (T) <= 4>::type* = 0)
         {
                 typedef typename AtomicStorageSelecter<T>::Type StorageType;
-                typedef detail::LoadStoreRegEx<StorageType>     LoadStoreType;
+                typedef ARMv6::LoadStoreRegEx<StorageType>      LoadStoreType;
 
                 union U {
                         StorageType raw;
