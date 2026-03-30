@@ -363,13 +363,21 @@ const char* GetDescriptionString (Result result)
         return desc;
 }
 
-void PrintResult (Result result)
+void TPrintResult (Result result)
 {
         TPrintf ("Result (%08x)\n", result.GetPrintableBits ());
         TPrintf ("  Level:       (%4d) %s\n", result.GetLevel (), GetLevelString (result));
         TPrintf ("  Summary:     (%4d) %s\n", result.GetSummary (), GetSummaryString (result));
         TPrintf ("  Module:      (%4d) %s\n", result.GetModule (), GetModuleString (result));
         TPrintf ("  Description: (%4d) %s\n", result.GetDescription (), GetDescriptionString (result));
+}
+void PrintResult (Result result)
+{
+        Printf ("Result (%08x)\n", result.GetPrintableBits ());
+        Printf ("  Level:       (%4d) %s\n", result.GetLevel (), GetLevelString (result));
+        Printf ("  Summary:     (%4d) %s\n", result.GetSummary (), GetSummaryString (result));
+        Printf ("  Module:      (%4d) %s\n", result.GetModule (), GetModuleString (result));
+        Printf ("  Description: (%4d) %s\n", result.GetDescription (), GetDescriptionString (result));
 }
 
 } // namespace detail

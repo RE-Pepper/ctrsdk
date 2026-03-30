@@ -1,24 +1,27 @@
+#include <nn/init/init_StartUp.h>
+#include <nn/module.h>
 #include <nn/svc/svc_Stub.h>
 #include <rt_locale.h>
 #include <rt_sys.h>
 
-extern "C" {
-void nninitRegion ();
-void nninitLocale ();
-void nninitSystem ();
-void nninitStartUp ();
+namespace {
+NN_MAKE_MODULE_SDK (s_SdkVersion, "CTR_SDK-2_4_1_200_none");
+NN_MAKE_MODULE_SDK (s_FirmwareVersion, "Firmware-02_30_20");
+} // namespace
 
-__weak void __cpp_initialize__aeabi_ ();
-u32*        __rt_locale (void);
+extern "C" void nninitRegion ();
+extern "C" void nninitStartUp ();
+extern "C" void nninitLocale ();
 
-void nninitCallStaticInitializers ();
-void nninitSetup ();
-void nnMain ();
+extern "C" __weak void __cpp_initialize__aeabi_ ();
+extern "C" u32*        __rt_locale (void);
 
-extern u8 Image$$ZI$$ZI$$Base[];
-extern u8 Image$$ZI$$ZI$$Limit[];
+extern "C" void nnMain ();
 
-void asm (__ctr_start) ()
+extern "C" u8 Image$$ZI$$ZI$$Base[];
+extern "C" u8 Image$$ZI$$ZI$$Limit[];
+
+extern "C" void __asm __ctr_start ()
 {
         // clang-format off
         bl __cpp(nninitRegion);
@@ -33,11 +36,21 @@ void asm (__ctr_start) ()
         // clang-format on
 }
 
-void asm (nninitRegion) ()
+extern "C" void nninitLocale ()
+{
+        NN_REFER_MODULE (s_SdkVersion);
+        NN_REFER_MODULE (s_FirmwareVersion);
+
+        u32* rt   = __rt_locale ();
+        *(rt + 1) = (u32)_get_lc_ctype (0, 0) + 1;
+        *(rt + 3) = (u32)_get_lc_numeric (0, 0);
+}
+
+extern "C" void asm (nninitRegion) ()
 {
         // clang-format off
-        ldr   r0, = __cpp(Image$$ZI$$ZI$$Base);
-        ldr   r1, = __cpp(Image$$ZI$$ZI$$Limit);
+        ldr   r0, =__cpp(Image$$ZI$$ZI$$Base);
+        ldr   r1, =__cpp(Image$$ZI$$ZI$$Limit);
         mov   r2, #0;
 
 run
@@ -47,12 +60,5 @@ run
         bx    lr;
         // clang-format on
 }
-
-void nninitLocale ()
-{
-        u32* rt   = __rt_locale ();
-        *(rt + 1) = (u32)_get_lc_ctype (0, 0) + 1;
-        *(rt + 3) = (u32)_get_lc_numeric (0, 0);
-}
 // clang-format on
-}
+

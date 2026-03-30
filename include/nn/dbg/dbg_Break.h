@@ -3,7 +3,9 @@
 #include <nn/Result.h>
 #include <nn/dbg/dbg_Enum.h>
 
-#ifndef __cplusplus
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 nnResult nndbgBreak (nndbgBreakReason reason);
 void     nndbgPanic ();
@@ -12,7 +14,9 @@ void     nndbgBreakWithTMessage_ (nndbgBreakReason reason, const char* filename,
 void     nndbgBreakWithResultMessage_ (nndbgBreakReason reason, nnResult result, const char* filename, int lineno, const char* fmt, ...);
 void     nndbgBreakWithResultTMessage_ (nndbgBreakReason reason, nnResult result, const char* filename, int lineno, const char* fmt, ...);
 
-#else
+#ifdef __cplusplus
+}
+#endif
 
 namespace nn {
 namespace dbg {
@@ -30,4 +34,3 @@ inline Result Break ()
 } // namespace dbg
 } // namespace nn
 
-#endif
