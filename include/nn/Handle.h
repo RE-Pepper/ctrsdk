@@ -25,29 +25,33 @@ protected:
         bit32 m_Handle;
 
 public:
-        Handle()
-            : m_Handle(0)
+        Handle ()
+            : m_Handle (0)
         {}
-        Handle(nnHandle handle)
-            : m_Handle(handle.value)
+        Handle (nnHandle handle)
+            : m_Handle (handle.value)
         {}
-        Handle(bit32 value)
-            : m_Handle(value)
+        Handle (bit32 value)
+            : m_Handle (value)
         {}
 
-        bool IsValid() const
+        bool IsValid () const
         {
                 return this->m_Handle != 0;
         }
 
-        bit32 GetPrintableBits() const
+        bit32 GetPrintableBits () const
         {
                 return this->m_Handle;
         }
 
-        bool operator==(const Handle& rhs) const { return this->m_Handle == rhs.m_Handle; }
-        bool operator!=(const Handle& rhs) const { return this->m_Handle != rhs.m_Handle; }
-             operator nnHandle() const { return (nnHandle){ this->m_Handle }; }
+        bool operator== (const Handle& rhs) const { return this->m_Handle == rhs.m_Handle; }
+        bool operator!= (const Handle& rhs) const { return this->m_Handle != rhs.m_Handle; }
+             operator nnHandle () const
+        {
+                nnHandle result = { m_Handle };
+                return result;
+        }
 };
 
 } // namespace nn
