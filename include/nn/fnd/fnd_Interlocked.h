@@ -45,6 +45,7 @@ private:
 
                 bool operator() (s32& other)
                 {
+                        other = m_operand;
                         return true;
                 }
         };
@@ -61,6 +62,11 @@ private:
 
                 bool operator() (s32& x)
                 {
+                        m_result = x;
+                        if (x == m_comparand) {
+                                x = m_value;
+                                return true;
+                        }
                         return false;
                 }
         };

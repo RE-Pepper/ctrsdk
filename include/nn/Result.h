@@ -315,25 +315,27 @@ struct Const_LM
 // 565
 NN_MAKE_CONST_RESULT (ResultSuccess, Result::LEVEL_SUCCESS, Result::SUMMARY_SUCCESS, Result::MODULE_COMMON, Result::DESCRIPTION_SUCCESS);
 
-// clang-format off
-static inline Result MakeInfoResult(Result::Summary summary, Result::Module module, int description) {// 585
-        return Result(Result::LEVEL_INFO, summary, module, description);
-} static inline Result MakeFatalResult(Result::Summary summary, Result::Module module, int description) {
-        return Result(Result::LEVEL_FATAL, summary, module, description);
-} static inline Result MakeResetResult(Result::Summary summary, Result::Module module, int description) {
-        return Result(Result::LEVEL_RESET, summary, module, description);
-} static inline Result MakeReinitResult(Result::Summary summary, Result::Module module, int description) {
-        return Result(Result::LEVEL_REINIT, summary, module, description);
-} static inline Result MakeUsageResult(Result::Summary summary, Result::Module module, int description) {// 593
-        return Result(Result::LEVEL_USAGE, summary, module, description);
-} static inline Result MakePermanentResult(Result::Summary summary, Result::Module module, int description) { // 595
-        return Result(Result::LEVEL_PERMANENT, summary, module, description);
-} static inline Result MakeTemporaryResult(Result::Summary summary, Result::Module module, int description) {
-        return Result(Result::LEVEL_TEMPORARY, summary, module, description);
-} static inline Result MakeStatusResult(Result::Summary summary, Result::Module module, int description) {
-        return Result(Result::LEVEL_STATUS, summary, module, description);
-}
-// clang-format on
+#define _NN_RESULT_MAKE_THESE(name, e)                                                                            \
+        static inline Result Make##name##Result (Result::Summary summary, Result::Module module, int description) \
+        {                                                                                                         \
+                return Result (Result::LEVEL_##e, summary, module, description);                                  \
+        }
+
+_NN_RESULT_MAKE_THESE (Info, INFO); // 585
+
+_NN_RESULT_MAKE_THESE (Fatal, FATAL);
+
+_NN_RESULT_MAKE_THESE (Reset, RESET);
+
+_NN_RESULT_MAKE_THESE (Reinit, REINIT);
+
+_NN_RESULT_MAKE_THESE (Usage, USAGE); // 593
+
+_NN_RESULT_MAKE_THESE (Permanent, PERMANENT); // 595
+
+_NN_RESULT_MAKE_THESE (Temporary, TEMPORARY);
+
+_NN_RESULT_MAKE_THESE (Status, STATUS);
 
 #ifdef __cplusplus
 extern "C" {
