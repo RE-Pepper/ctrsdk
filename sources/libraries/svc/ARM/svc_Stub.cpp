@@ -152,7 +152,7 @@ Result asm_ext(CreateAddressArbiter, ".nn.svc.CreateAddressArbiter")(Handle* arb
         bx  lr;
 }
 
-Result asm_ext(ArbitrateAddress, ".nn.svc.ArbitrateAddress")(Handle arbiter, uptr addr, nn::os::ArbitrationType type, s32 value, s64 ns)
+Result asm_ext(ArbitrateAddress, ".nn.svc.ArbitrateAddress")(Handle arbiter, uptr addr, nn::os::ArbitrationType type, s32 value)
 {
         svc 0x22;
         bx lr;

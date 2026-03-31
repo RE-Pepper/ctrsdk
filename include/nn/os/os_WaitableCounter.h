@@ -10,17 +10,19 @@ namespace nn {
 namespace os {
 class WaitableCounter
 {
+        static nnHandle s_Handle;
+
 private:
         typedef fnd::InterlockedVariable<s32> ValueType; // 36
         ValueType                             m_Value;
-        static nnHandle                       s_Handle;
 
 public:
         void Initialize ();
         void Finalize ();
 
-        ValueType& operator* () { return m_Value; }
-        ValueType* operator->() { return &m_Value; }
+        ValueType&       operator* () { return m_Value; }
+        const ValueType& operator* () const { return m_Value; }
+        ValueType*       operator->() { return &m_Value; }
 
         Result ArbitrateAddress (ArbitrationType type, s32 value)
         {

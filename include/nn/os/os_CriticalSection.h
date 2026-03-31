@@ -36,23 +36,6 @@ private:
                 }
         };
 
-        struct ScopedLock
-        {
-        private:
-                CriticalSection& m_Reference;
-
-        public:
-                ScopedLock (CriticalSection& section)
-                    : m_Reference (section)
-                {
-                        m_Reference.Enter ();
-                }
-                ~ScopedLock ()
-                {
-                        m_Reference.Leave ();
-                }
-        };
-
         WaitableCounter m_Counter;
         uptr            m_ThreadUniqueValue;
         s32             m_LockCount;
@@ -64,7 +47,12 @@ public:
                 m_ThreadUniqueValue = GetInvalidThreadUniqueValue ();
                 m_LockCount         = 0;
         }
-        bool IsInitialized () const { return m_LockCount >= 0; }
+
+        Result TryInitialize ()
+        {
+                Initialize ();
+                return ResultSuccess ();
+        }
         void Finalize () { m_LockCount = -1; }
         void Enter ()
         {
@@ -73,6 +61,15 @@ public:
                         EnterImpl ();
                 }
                 ++m_LockCount;
+        }
+        bool TryEnter ()
+        {
+                NN_ASSERT_SDK (IsInitialized ());
+                if (LockedByCurrentThread () || TryEnterImpl ()) {
+                        ++m_LockCount;
+                        return true;
+                }
+                return false;
         }
         void Leave ()
         {
@@ -92,21 +89,6 @@ public:
                 }
         }
 
-        Result TryInitialize ()
-        {
-                Initialize ();
-                return ResultSuccess ();
-        }
-        bool TryEnter ()
-        {
-                NN_ASSERT_SDK (IsInitialized ());
-                if (LockedByCurrentThread () || TryEnterImpl ()) {
-                        ++m_LockCount;
-                        return true;
-                }
-                return false;
-        }
-
         void EnterImpl ();
         bool TryEnterImpl ()
         {
@@ -121,19 +103,36 @@ public:
 
         uptr GetThreadUniqueValue ()
         {
-                //uptr v;
-                // TODO
-                return 0;
+                uptr v;
+                __asm { MRC p15, 0, v, c13, c0, 3 }
+                return v;
         }
         uptr GetInvalidThreadUniqueValue ()
         {
                 return 0;
-                
         }
         bool LockedByCurrentThread ()
         {
                 return GetThreadUniqueValue () == m_ThreadUniqueValue;
         }
+        bool IsInitialized () const { return m_LockCount >= 0; }
+
+        struct ScopedLock
+        {
+        private:
+                CriticalSection& m_Reference;
+
+        public:
+                ScopedLock (CriticalSection& section)
+                    : m_Reference (section)
+                {
+                        m_Reference.Enter ();
+                }
+                ~ScopedLock ()
+                {
+                        m_Reference.Leave ();
+                }
+        };
 
 public:
         CriticalSection ()

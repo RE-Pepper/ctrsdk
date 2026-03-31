@@ -45,7 +45,6 @@ private:
 
                 bool operator() (s32& other)
                 {
-                        other = m_operand;
                         return true;
                 }
         };
@@ -62,11 +61,6 @@ private:
 
                 bool operator() (s32& x)
                 {
-                        m_result = x;
-                        if (x == m_comparand) {
-                                x = m_value;
-                                return true;
-                        }
                         return false;
                 }
         };
@@ -94,7 +88,7 @@ public:
         template <typename UpdateFunc>
         bool AtomicUpdateConditional (UpdateFunc& func)
         {
-                return Interlocked::AtomicUpdate (&m_v, func);
+                return ARMv6::Interlocked::AtomicUpdate (&m_v, func);
         }
 };
 

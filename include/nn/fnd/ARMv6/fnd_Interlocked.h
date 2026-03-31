@@ -5,6 +5,7 @@
 namespace nn {
 namespace fnd {
 namespace ARMv6 {
+namespace detail {
 
 // Primary template for 32-bit and smaller (s32, s16, s8, bool)
 template <typename T>
@@ -35,7 +36,7 @@ struct LoadStoreRegEx<s64>
         }
 };
 
-} // namespace ARMv6
+} // namespace detail
 
 class Interlocked
 {
@@ -75,7 +76,7 @@ public:
                 typename nn::util::enable_if<sizeof (T) <= 4>::type* = 0)
         {
                 typedef typename AtomicStorageSelecter<T>::Type StorageType;
-                typedef ARMv6::LoadStoreRegEx<StorageType>      LoadStoreType;
+                typedef detail::LoadStoreRegEx<StorageType>     LoadStoreType;
 
                 union U {
                         StorageType raw;
@@ -84,7 +85,7 @@ public:
 
                 while (true) {
                         // 1. Exclusively load the current value
-                        u.raw = LoadStoreType::LoadRegEx (reinterpret_cast<volatile StorageType*> (p));
+                        u.raw = LoadStoreType::LoadRegEx ((volatile s32*)(p));
 
                         // Return #1: Abort path
                         // Call the functor. If it returns false/0, we clear the monitor and bail.
@@ -95,12 +96,13 @@ public:
 
                         // Return #2: Success path
                         // StoreRegEx returns 0 on SUCCESS (the exclusive monitor wasn't tripped).
-                        if (LoadStoreType::StoreRegEx (u.raw, reinterpret_cast<volatile StorageType*> (p)) == 0) {
+                        if (LoadStoreType::StoreRegEx (u.raw, (volatile s32*)(p)) == 0) {
                                 return true;
                         }
                 }
         }
 };
+} // namespace ARMv6
 } // namespace fnd
 } // namespace nn
 
