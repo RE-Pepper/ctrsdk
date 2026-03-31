@@ -1,3 +1,4 @@
+#include <nn/os/os_CriticalSection.h>
 #include <nn/srv/srv_Api.h>
 #include <nn/srv/srv_Service.h>
 
@@ -6,7 +7,12 @@ namespace srv {
 
 namespace {
 
-static int s_InitializeCount = 0;
+var(s32, s_InitializeCount) = 0;
+//var(Semaphore, s_NotificationSemaphore);
+//var(HandlerManager, s_HandlerManager);
+//var(Thread, s_NotificationDispatcher);
+var(os::CriticalSection, s_InitializeLock);
+//var(StackBuffer, s_Stack);
 
 } // namespace
 
@@ -23,6 +29,18 @@ Result GetServiceHandle (Handle* pOut, const char* pName, s32 nameLen, bit32 fla
         return detail::Service::GetServiceHandle (pOut, pName, nameLen, flags);
 }
 #endif
+
+/*
+
+HandlerManager::Register 40,42
+HandlerManager::Find 65
+
+anon DispatcherThread 111
+
+Initialize 167
+GetServiceHandle 368
+
+*/
 
 } // namespace srv
 } // namespace nn

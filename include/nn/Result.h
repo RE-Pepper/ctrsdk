@@ -297,45 +297,50 @@ struct Const_LM
 };
 
 // Result creators
-#define NN_MAKE_CONST_RESULT(result, level, summary, module, description) \
+#define NN_RESULT_DEF_CONST(result, level, summary, module, description) \
         typedef nn::Result::Const<(level), (summary), (module), (description)> result
-#define NN_MAKE_CONST_RANGE_RESULT(result, level, summary, module, description, a, b) \
+#define NN_RESULT_DEF_CONST_RANGE(result, level, summary, module, description, a, b) \
         typedef nn::Result::Const<(level), (summary), (module), (description), (a), (b)> result
 
-#define NN_MAKE_CONST_LSM_RESULT(result, sub, description) \
+#define NN_RESULT_DEF_CONST_LSM(result, sub, description) \
         typedef sub::Const<(description)> result
-#define NN_MAKE_CONST_LSM_SUB(sub, level, summary, module) \
+#define NN_RESULT_MAKE_CONST_LSM(sub, level, summary, module) \
         typedef ::nn::Result::Const_LSM<(level), (summary), (module)> sub
 
-#define NN_MAKE_CONST_LM_RESULT(result, sub, summary, description) \
+#define NN_RESULT_DEF_CONST_LM(result, sub, summary, description) \
         typedef sub::Const<(summary), (description)> result
-#define NN_MAKE_CONST_LM_SUB(sub, level, module) \
+#define NN_RESULT_MAKE_CONST_LM(sub, level, module) \
         typedef ::nn::Result::Const_LM<(level), (module)> sub
-
 // 565
-NN_MAKE_CONST_RESULT (ResultSuccess, Result::LEVEL_SUCCESS, Result::SUMMARY_SUCCESS, Result::MODULE_COMMON, Result::DESCRIPTION_SUCCESS);
+NN_RESULT_DEF_CONST (ResultSuccess, Result::LEVEL_SUCCESS, Result::SUMMARY_SUCCESS, Result::MODULE_COMMON, Result::DESCRIPTION_SUCCESS);
 
-#define _NN_RESULT_MAKE_THESE(name, e)                                                                            \
+#define _NN_RESULT_MAKE_TYPE(name, e)                                                                             \
         static inline Result Make##name##Result (Result::Summary summary, Result::Module module, int description) \
         {                                                                                                         \
                 return Result (Result::LEVEL_##e, summary, module, description);                                  \
         }
 
-_NN_RESULT_MAKE_THESE (Info, INFO); // 585
+_NN_RESULT_MAKE_TYPE (Info, INFO); // 585
 
-_NN_RESULT_MAKE_THESE (Fatal, FATAL);
+_NN_RESULT_MAKE_TYPE (Fatal, FATAL);
 
-_NN_RESULT_MAKE_THESE (Reset, RESET);
+_NN_RESULT_MAKE_TYPE (Reset, RESET);
 
-_NN_RESULT_MAKE_THESE (Reinit, REINIT);
+_NN_RESULT_MAKE_TYPE (Reinit, REINIT);
 
-_NN_RESULT_MAKE_THESE (Usage, USAGE); // 593
+_NN_RESULT_MAKE_TYPE (Usage, USAGE); // 593
 
-_NN_RESULT_MAKE_THESE (Permanent, PERMANENT); // 595
+_NN_RESULT_MAKE_TYPE (Permanent, PERMANENT); // 595
 
-_NN_RESULT_MAKE_THESE (Temporary, TEMPORARY);
+_NN_RESULT_MAKE_TYPE (Temporary, TEMPORARY);
 
-_NN_RESULT_MAKE_THESE (Status, STATUS);
+_NN_RESULT_MAKE_TYPE (Status, STATUS);
+
+#define NN_RESULT_DEF(Type, Res, Sum, Desc) \
+        inline Result Res ()                \
+        {                                   \
+                return Type (Sum, Desc);    \
+        }
 
 #ifdef __cplusplus
 extern "C" {
