@@ -31,10 +31,10 @@ struct ParentalControlInfo
         char password[5];
         u8   rsv2[3];
 
-        unsigned short secretAnswer[65];
+        wchar_t secretAnswer[65];
 
         u8 rsv3[42];
-}
+};
 
 } // namespace CTR
 } // namespace cfg

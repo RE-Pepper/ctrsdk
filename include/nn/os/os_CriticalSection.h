@@ -74,11 +74,11 @@ public:
         void Leave ()
         {
                 NN_ASSERT_SDK (IsInitialized ());
-                NN_ASSERT_SDK_EX (LockedByCurrentThread () && m_LockCount > 0,
+                NN_ASSERT_SDK_MSG (LockedByCurrentThread () && m_LockCount > 0,
                         "CriticalSection is not entered on the current thread.");
 
                 if (--m_LockCount == 0) {
-                        NN_ASSERT_SDK_EX (*m_Counter < 0, "CriticalSection is not entered.");
+                        NN_ASSERT_SDK_MSG (*m_Counter < 0, "CriticalSection is not entered.");
                         m_ThreadUniqueValue = GetInvalidThreadUniqueValue ();
                         ReverseUpdater updater;
                         m_Counter->AtomicUpdateConditional (updater);

@@ -7,19 +7,23 @@
 namespace nn {
 namespace os {
 
-class WaitObject : nn::os::HandleObject
+class WaitObject : HandleObject
 {
+private:
+        static Result WaitMultiple (s32, bool, s64);
+
 public:
-        void       WaitOne();
-        bool       WaitOne(nn::fnd::TimeSpan);
-        static s32 WaitAny(nn::fnd::TimeSpan);
+        void       WaitOne ();
+        bool       WaitOne (fnd::TimeSpan);
+        static s32 WaitAny (fnd::TimeSpan);
 
 protected:
-        WaitObject();
-        ~WaitObject();
+        WaitObject ();
+        ~WaitObject ();
+};
 
-private:
-        static nn::Result WaitMultiple(s32, bool, s64);
+class InterruptEvent : WaitObject
+{
 };
 
 } // namespace os

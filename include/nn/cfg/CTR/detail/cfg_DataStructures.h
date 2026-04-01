@@ -13,7 +13,7 @@ struct BackLightCfgData
         bit8 ablEnable;
         u8   luminanceLevel;
 };
-static_assert_(sizeof(BackLightCfgData) == 2);
+static_assert_ (sizeof (BackLightCfgData) == 2);
 struct BacklightPwmTableCfgData
 {
         f32  coef[3][3];
@@ -23,7 +23,7 @@ struct BacklightPwmTableCfgData
         u16  brightnessBase;
         u16  brightnessMinimum;
 };
-static_assert_(sizeof(BacklightPwmTableCfgData) == 56);
+static_assert_ (sizeof (BacklightPwmTableCfgData) == 56);
 
 struct AblDetailCfgData
 {
@@ -43,7 +43,7 @@ struct AblDetailCfgData
         u8    rsLut[9];
         bit8  reserved[2];
 };
-static_assert_(sizeof(AblDetailCfgData) == 32);
+static_assert_ (sizeof (AblDetailCfgData) == 32);
 
 struct UlcdLibAssumptionCfgData
 {
@@ -56,14 +56,14 @@ struct UlcdLibAssumptionCfgData
         f32 maxDepthRangeBack;
         f32 maxDepthRangeFront;
 };
-static_assert_(sizeof(UlcdLibAssumptionCfgData) == 32);
+static_assert_ (sizeof (UlcdLibAssumptionCfgData) == 32);
 
 struct UlcdDelayCfgData
 {
         s8 to2D;
         s8 to3D;
 };
-static_assert_(sizeof(UlcdDelayCfgData) == 2);
+static_assert_ (sizeof (UlcdDelayCfgData) == 2);
 
 struct CameraQualityCalData
 {
@@ -79,7 +79,7 @@ struct CameraQualityCalData
         u16 awbX0Right;
         u16 awbX0Left;
 };
-static_assert_(sizeof(CameraQualityCalData) == 22);
+static_assert_ (sizeof (CameraQualityCalData) == 22);
 struct CameraPositionCalData
 {
         struct Flags
@@ -102,14 +102,14 @@ struct CameraPositionCalData
         s16 imageHeight;
         u8  reserved[16];
 };
-static_assert_(sizeof(CameraPositionCalData) == 64);
+static_assert_ (sizeof (CameraPositionCalData) == 64);
 struct CameraCfgData
 {
         struct CameraPositionCalData position;
         u32                          reserved[16];
         struct CameraQualityCalData  quality;
 } NN_PACK;
-static_assert_(sizeof(CameraCfgData) == 150);
+static_assert_ (sizeof (CameraCfgData) == 150);
 
 struct AnalogStickCfgData
 {
@@ -124,7 +124,7 @@ struct AnalogStickCfgData
         s16 type;
         s16 reserve[3];
 };
-static_assert_(sizeof(AnalogStickCfgData) == 28);
+static_assert_ (sizeof (AnalogStickCfgData) == 28);
 struct AnalogInterfaceParam
 {
         u8 interval;
@@ -136,7 +136,7 @@ struct AnalogInterfaceParam
         u8 ymDriver;
         u8 reserve;
 };
-static_assert_(sizeof(AnalogInterfaceParam) == 8);
+static_assert_ (sizeof (AnalogInterfaceParam) == 8);
 
 struct CodecCfgData
 {
@@ -151,24 +151,24 @@ struct CodecCfgData
         u8 micGainCalibrateParam;
         u8 pad[3];
 
-        nn::codec::CTR::IirFilterParamEQ filterHp32;
-        nn::codec::CTR::IirFilterParamEQ filterHp47;
-        nn::codec::CTR::IirFilterParamEQ filterSp32;
-        nn::codec::CTR::IirFilterParamEQ filterSp47;
-        nn::codec::CTR::IirFilterParam   filterMic32;
-        nn::codec::CTR::IirFilterParam   filterMic47;
-        nn::codec::CTR::IirFilterParam   filterFree;
+        codec::CTR::IirFilterParamEQ filterHp32;
+        codec::CTR::IirFilterParamEQ filterHp47;
+        codec::CTR::IirFilterParamEQ filterSp32;
+        codec::CTR::IirFilterParamEQ filterSp47;
+        codec::CTR::IirFilterParam   filterMic32;
+        codec::CTR::IirFilterParam   filterMic47;
+        codec::CTR::IirFilterParam   filterFree;
 
         AnalogInterfaceParam AnalogInterfaceParam;
 };
-static_assert_(sizeof(CodecCfgData) == 308);
+static_assert_ (sizeof (CodecCfgData) == 308);
 
 struct SurroundCfgData
 {
         s16 specialFilter[256];
         s32 iirFilter[5];
 };
-static_assert_(sizeof(SurroundCfgData) == 532);
+static_assert_ (sizeof (SurroundCfgData) == 532);
 
 struct UserNameCfgData
 {
@@ -182,19 +182,19 @@ struct LanguageCfgData
 {
         u8 languageCode;
 };
-static_assert_(sizeof(LanguageCfgData) == 1);
+static_assert_ (sizeof (LanguageCfgData) == 1);
 
 struct SimpleAddressIdCfgData
 {
         u32 id;
 };
-static_assert_(sizeof(SimpleAddressIdCfgData) == 4);
+static_assert_ (sizeof (SimpleAddressIdCfgData) == 4);
 struct SimpleAddressPositionCfgData
 {
         u16 latitude;
         u16 longitude;
 };
-static_assert_(sizeof(SimpleAddressPositionCfgData) == 4);
+static_assert_ (sizeof (SimpleAddressPositionCfgData) == 4);
 
 typedef struct ParentalControlInfo ParentalControlInfoCfgData; // 337
 
@@ -206,7 +206,7 @@ union EulaVersion {
                 u8 majorVersion;
         } detailed;
 };
-static_assert_(sizeof(EulaVersion) == 2);
+static_assert_ (sizeof (EulaVersion) == 2);
 
 struct EulaInfoCfgData
 {
@@ -221,13 +221,13 @@ struct BossSettingCfgData
         u8 isAllowedUploadPersonalData : 1;
         u8 rsv : 6;
 };
-static_assert_(sizeof(BossSettingCfgData) == 1);
+static_assert_ (sizeof (BossSettingCfgData) == 1);
 
 struct SoundSettingCfgData
 {
         u8 soundOutputMode;
 };
-static_assert_(sizeof(SoundSettingCfgData) == 1);
+static_assert_ (sizeof (SoundSettingCfgData) == 1);
 
 typedef struct EchoCancelParam EchoCancelCfgData; // 385
 
@@ -237,7 +237,7 @@ struct LocalFriendCodeBaseCfgData
         bit64 rsv : 14;
         bit64 counter : 16;
 };
-static_assert_(sizeof(LocalFriendCodeBaseCfgData) == 8);
+static_assert_ (sizeof (LocalFriendCodeBaseCfgData) == 8);
 
 struct SystemInfoCfgData
 {
@@ -251,13 +251,13 @@ struct PseudoRomIdCfgData
 {
         bit64 pseudoRomId;
 };
-static_assert_(sizeof(PseudoRomIdCfgData) == 8);
+static_assert_ (sizeof (PseudoRomIdCfgData) == 8);
 
 struct HomeButtonSettingCfgData
 {
         bool isDisabled;
 };
-static_assert_(sizeof(HomeButtonSettingCfgData) == 1);
+static_assert_ (sizeof (HomeButtonSettingCfgData) == 1);
 
 struct TwlParentalControlInfoCfgData
 {
@@ -273,14 +273,14 @@ struct TwlParentalControlInfoCfgData
                 u32 rsv : 25;
         } flags;
 
-        u8             rsv1[3];
-        u8             ogn;
-        u8             ratingAge;
-        u8             secretQuestionID;
-        u8             secretAnswerLength;
-        u8             rsv[2];
-        char           password[5];
-        unsigned short secretAnswer[65];
+        u8      rsv1[3];
+        u8      ogn;
+        u8      ratingAge;
+        u8      secretQuestionID;
+        u8      secretAnswerLength;
+        u8      rsv[2];
+        char    password[5];
+        wchar_t secretAnswer[65];
 };
 static_assert_(sizeof(TwlParentalControlInfoCfgData) == 148);
 struct TwlEulaInfoCfgData
@@ -293,12 +293,12 @@ struct TwlCountryCodeCfgData
 {
         u8 country;
 };
-static_assert_(sizeof(TwlCountryCodeCfgData) == 1);
+static_assert_ (sizeof (TwlCountryCodeCfgData) == 1);
 struct TwlMovableUniqueIdCfgData
 {
         u8 movableUniqueId[16];
 };
-static_assert_(sizeof(TwlMovableUniqueIdCfgData) == 16);
+static_assert_ (sizeof (TwlMovableUniqueIdCfgData) == 16);
 
 struct FirstLaunchInfoCfgData
 {
@@ -319,14 +319,14 @@ struct SlideVolume
         s16 min;
         s16 max;
 };
-static_assert_(sizeof(SlideVolume) == 4);
+static_assert_ (sizeof (SlideVolume) == 4);
 
 struct McuSlideVolumeRangeCfgData
 {
         SlideVolume svr2;
         SlideVolume sound;
 };
-static_assert_(sizeof(McuSlideVolumeRangeCfgData) == 8);
+static_assert_ (sizeof (McuSlideVolumeRangeCfgData) == 8);
 struct DebugParamCfgData
 {
         struct Param1
@@ -334,7 +334,7 @@ struct DebugParamCfgData
                 u8 general : 1;
                 u8 rsv : 7;
         };
-        static_assert_(sizeof(Param1) == 1);
+        static_assert_ (sizeof (Param1) == 1);
 
         bool dlpDebug;
         union {
@@ -345,7 +345,7 @@ struct DebugParamCfgData
         u8 fsLatencyEmulationParam;
         u8 rsv;
 };
-static_assert_(sizeof(DebugParamCfgData) == 4);
+static_assert_ (sizeof (DebugParamCfgData) == 4);
 
 } // namespace detail
 } // namespace CTR

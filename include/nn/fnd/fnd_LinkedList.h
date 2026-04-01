@@ -1,5 +1,6 @@
 #pragma once
 
+#include <nn/assert.h>
 #include <nn/fnd/fnd_Result.h>
 #include <nn/util/util_NonCopyable.h>
 
@@ -14,26 +15,11 @@ public:
             : m_Head (NULL)
         {}
 
-        bool IsEmpty () { m_Head == NULL; } // 95
+        class Item;
 
 private:
+        bool  IsEmpty () { m_Head == NULL; } // 95
         Item* m_Head;
-
-        class Item : nn::util::ADLFireWall::NonCopyable<Item>
-        {
-        private:
-                Item* m_PreviousLink;
-                Item* m_NextLink;
-
-        public:
-                Item : m_PreviousLink (NULL),
-                       m_NextLink = NULL
-                {} // 217
-                ~Item ()
-                {
-                        NN_ASSERT_SDK (!m_PreviousLink && !m_NextLink) // 218
-                }
-        };
 
         static void ClearLinks (Item* p)
         {
@@ -49,14 +35,31 @@ private:
         }
 
 public:
+        class Item : nn::util::ADLFireWall::NonCopyable<Item>
+        {
+        private:
+                Item* m_PreviousLink;
+                Item* m_NextLink;
+
+        public:
+                Item ()
+                    : m_PreviousLink (NULL),
+                      m_NextLink (NULL)
+                {} // 217
+                ~Item ()
+                {
+                        NN_ASSERT_SDK (!m_PreviousLink && !m_NextLink) // 218
+                }
+        };
+
         void PushBack (T* p)
         {
-                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress); // 244
-                NN_ASSERT_SDK (p);                              // 245
+                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress ()); // 244
+                NN_ASSERT_SDK (p);                                 // 245
                 Item* pNode = (Item*)p;
-                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0); // 247
-                NN_ASSERT_SDK (!pNode->m_PreviousLink);                       // 248
-                NN_ASSERT_SDK (!pNode->m_NextLink);                           // 249
+                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0 ()); // 247
+                NN_ASSERT_SDK (!pNode->m_PreviousLink);                          // 248
+                NN_ASSERT_SDK (!pNode->m_NextLink);                              // 249
 
                 if (IsEmpty ()) {
                         p->m_PreviousLink = p;
@@ -69,10 +72,10 @@ public:
 
         void PushFront (T* p)
         {
-                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress);
+                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress ());
                 NN_ASSERT_SDK (p);
                 Item* pNode = (Item*)p;
-                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0);
+                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0 ());
                 NN_ASSERT_SDK (!pNode->m_PreviousLink);
                 NN_ASSERT_SDK (!pNode->m_NextLink);
 
@@ -106,10 +109,10 @@ public:
 
         T* GetNext (T* p)
         {
-                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress);
+                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress ());
                 NN_ASSERT_SDK (p);
                 Item* pNode = (Item*)p;
-                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0);
+                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0 ());
                 NN_ASSERT_SDK (!pNode->m_PreviousLink);
                 NN_ASSERT_SDK (!pNode->m_NextLink);
 
@@ -122,10 +125,10 @@ public:
 
         T* GetPrevious (T* p)
         {
-                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress);
+                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress ());
                 NN_ASSERT_SDK (p);
                 Item* pNode = (Item*)p;
-                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0);
+                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0 ());
                 NN_ASSERT_SDK (!pNode->m_PreviousLink);
                 NN_ASSERT_SDK (!pNode->m_NextLink);
 
@@ -146,14 +149,14 @@ public:
 
         void Erase (T* p)
         {
-                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress);
+                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress ());
                 NN_ASSERT_SDK (p);
                 Item* pNode = (Item*)p;
-                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0);
+                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0 ());
                 NN_ASSERT_SDK (!pNode->m_PreviousLink);
                 NN_ASSERT_SDK (!pNode->m_NextLink);
 
-                if (this->m_PreviousLink == p) {
+                if (p->m_PreviousLink == p) {
                         this->m_Head = NULL;
                 } else {
                         if (this->m_Head == p) {

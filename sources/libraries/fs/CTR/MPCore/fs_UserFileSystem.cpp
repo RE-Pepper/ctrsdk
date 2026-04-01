@@ -1,4 +1,4 @@
-#include <nn/fs/CTR/MPCore/detail/fs_UserFileSystem.h>
+#include <nn/fs/CTR/MPCore/fs_UserFileSystem.h>
 
 RP_SHUTUP
 

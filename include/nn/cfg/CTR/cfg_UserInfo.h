@@ -6,8 +6,8 @@ namespace CTR {
 
 struct UserName
 {
-        unsigned short userName[11];
-        bool           isNgUserName;
+        wchar_t userName[11];
+        bool    isNgUserName;
 };
 
 struct Birthday
@@ -20,8 +20,8 @@ struct SimpleAddress
 {
         u32 id;
 
-        unsigned short countryName[64];
-        unsigned short regionName[16];
+        wchar_t countryName[64];
+        wchar_t regionName[16];
 
         u16 latitude;
         u16 longitude;
