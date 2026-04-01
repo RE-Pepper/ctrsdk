@@ -6,7 +6,7 @@ namespace detail {
 
 void RemoveListObject (NNSFndList* list, void* object);
 
-void* GetNextListObject (NNSFndList* list, void* object);
+void* GetNextListObject (const NNSFndList* list, const void* object);
 
 } // namespace detail
 } // namespace fnd

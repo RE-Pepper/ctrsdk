@@ -5,7 +5,11 @@ namespace fnd {
 namespace detail {
 
 typedef u32 NNSiUIntPtr;
-// thats as far as the dwarf goes...
+
+NNSiUIntPtr NNSiGetUIntPtr (const void* ptr)
+{
+        return NNSiUIntPtr (ptr);
+}
 
 } // namespace detail
 } // namespace fnd

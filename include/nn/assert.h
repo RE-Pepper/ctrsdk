@@ -3,7 +3,7 @@
 #include <nn/Handle.h>
 #include <nn/dbg/dbg_Break.h>
 
-#ifndef NN_SWITCH_DISABLE_ASSERT_WARNING_FOR_SDK
+#if NN_SWITCH_DISABLE_ASSERT_WARNING_FOR_SDK == 1
 #define NN_ASSERT_SDK_MSG(cond, msg)                                                                 \
         if (!(cond)) {                                                                               \
                 nndbgBreakWithTMessage_ (NN_DBG_BREAK_REASON_ASSERT, __FILE__, __LINE__, "%s", msg); \
