@@ -18,6 +18,7 @@ struct ParentalControlFlags
         u32 video;
         u32 rsv;
 };
+static_assert_ (sizeof (ParentalControlFlags) == 0x2C);
 
 struct ParentalControlInfo
 {
@@ -35,6 +36,7 @@ struct ParentalControlInfo
 
         u8 rsv3[42];
 };
+static_assert_ (sizeof (ParentalControlInfo) == 0xE8);
 
 } // namespace CTR
 } // namespace cfg

@@ -14,6 +14,7 @@ struct DataContentArchivePath
         util::SizedEnum4<MediaType> mediaType;
         ContentIdx                  contentIdx;
 };
+static_assert_ (sizeof (DataContentArchivePath) == 0x10);
 
 struct UserSaveDataArchivePath
 {
@@ -28,6 +29,7 @@ struct UserSaveDataArchivePath
                 return ret;
         }
 };
+static_assert_ (sizeof (UserSaveDataArchivePath) == 0xC);
 
 struct ExtSaveDataArchivePath
 {
@@ -42,6 +44,7 @@ struct ExtSaveDataArchivePath
                 return ret;
         }
 };
+static_assert_ (sizeof (ExtSaveDataArchivePath) == 0xC);
 
 struct SystemSaveDataArchivePath
 {
@@ -56,6 +59,7 @@ struct SystemSaveDataArchivePath
                 return ret;
         }
 };
+static_assert_ (sizeof (SystemSaveDataArchivePath) == 0x8);
 
 } // namespace CTR
 } // namespace fs

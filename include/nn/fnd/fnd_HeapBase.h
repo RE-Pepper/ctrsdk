@@ -37,14 +37,15 @@ public:
         void FillMemoryZero (uptr, size_t size);
 
 #if 0 // TODO: DEBUG MACRO
-        void DebugFillMemory(uptr, size_t, HeapFillType) {}
+        void DebugFillMemory (uptr, size_t, HeapFillType) {}
 #else
         void DebugFillMemory (uptr, size_t, HeapFillType) {}
+#endif
 
         static void FillMemory (uptr, uptr, bit8);
         static void FillMemory32 (uptr, uptr, bit8);
-#endif
 };
+// static_assert_ (sizeof (HeapBase) == 0x18); needs some user
 
 } // namespace fnd
 } // namespace nn

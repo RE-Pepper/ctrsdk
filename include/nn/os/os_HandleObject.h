@@ -8,7 +8,7 @@
 namespace nn {
 namespace os {
 
-class HandleObject : nn::util::ADLFireWall::NonCopyable<HandleObject>
+class HandleObject : util::ADLFireWall::NonCopyable<HandleObject>
 {
 private:
         Handle m_Handle;
@@ -57,6 +57,7 @@ public:
                 m_Handle = Handle ();
         }
 };
+static_assert_ (sizeof (HandleObject) == 0x4);
 
 } // namespace os
 } // namespace nn

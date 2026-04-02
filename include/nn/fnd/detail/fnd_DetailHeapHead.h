@@ -9,6 +9,7 @@ typedef struct
         void* prevObject;
         void* nextObject;
 } NNSFndLink;
+static_assert_ (sizeof (NNSFndLink) == 0x8);
 
 typedef struct
 {
@@ -17,6 +18,7 @@ typedef struct
         u16   numObjects;
         u16   offset;
 } NNSFndList;
+static_assert_ (sizeof (NNSFndList) == 0xC);
 
 struct NNSiFndExpHeapMBlockHead
 {
@@ -26,20 +28,25 @@ struct NNSiFndExpHeapMBlockHead
         NNSiFndExpHeapMBlockHead* pMBHeadPrev;
         NNSiFndExpHeapMBlockHead* pMBHeadBext;
 };
+static_assert_ (sizeof (NNSiFndExpHeapMBlockHead) == 0x10);
+
 struct NNSiFndExpMBlockList
 {
         NNSiFndExpHeapMBlockHead* head;
         NNSiFndExpHeapMBlockHead* tail;
 };
+static_assert_ (sizeof (NNSiFndExpMBlockList) == 0x8);
+
 struct NNSiFndExpHeapHead
 {
-        NNSiFndExpMBlockList* mbFreeList;
-        NNSiFndExpMBlockList* mbUsedList;
-        u16                   groupID;
-        u16                   feature;
-        bool                  reuse;
-        int                   unk; // unnamed int?
+        NNSiFndExpMBlockList mbFreeList;
+        NNSiFndExpMBlockList mbUsedList;
+        u16                  groupID;
+        u16                  feature;
+        bool                 reuse;
+        u32 : 24;
 };
+static_assert_ (sizeof (NNSiFndExpHeapHead) == 0x18);
 
 struct ExpHeapImpl
 {
@@ -53,6 +60,7 @@ struct ExpHeapImpl
 
         ExpHeapImpl () : attribute (0) {}
 };
+static_assert_ (sizeof (ExpHeapImpl) == 0x3C);
 
 } // namespace detail
 } // namespace fnd

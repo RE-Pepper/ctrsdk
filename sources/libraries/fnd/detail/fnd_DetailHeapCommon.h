@@ -16,6 +16,8 @@ void             DumpHeapList ();
 void             NNSi_FndFinalizeHeap (NNSiFndHeapHead* pHeapHd);
 u32              GetFillValForHeap (int type);
 
+#define NN_HEAP_EXP_IDENT 0x45585048 // b'EXPH'
+
 } // namespace detail
 } // namespace fnd
 } // namespace nn

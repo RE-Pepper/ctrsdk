@@ -145,6 +145,7 @@ public:
         }
         ~CriticalSection () {}
 };
+static_assert_ (sizeof (CriticalSection) == 0xC);
 
 } // namespace os
 } // namespace nn

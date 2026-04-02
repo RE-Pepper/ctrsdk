@@ -25,6 +25,7 @@ class IFile
         virtual void   Close () = 0;
         virtual ~IFile () {}
 };
+static_assert_ (sizeof (IFile) == 0x4);
 
 class IDirectory
 {
@@ -32,6 +33,7 @@ class IDirectory
         virtual void   Close ()                            = 0;
         virtual ~IDirectory () {}
 };
+static_assert_ (sizeof (IDirectory) == 0x4);
 
 class IArchive
 {
@@ -47,6 +49,7 @@ class IArchive
         virtual Result GetFreeBytes (s64* pOut) {}
         virtual ~IArchive () {}
 };
+static_assert_ (sizeof (IArchive) == 0x4);
 
 } // namespace MPCore
 } // namespace CTR

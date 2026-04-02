@@ -9,12 +9,14 @@ struct UserName
         wchar_t userName[11];
         bool    isNgUserName;
 };
+static_assert_ (sizeof (UserName) == 0x18);
 
 struct Birthday
 {
         s8 month;
         s8 day;
 };
+static_assert_ (sizeof (Birthday) == 0x2);
 
 struct SimpleAddress
 {
@@ -26,6 +28,7 @@ struct SimpleAddress
         u16 latitude;
         u16 longitude;
 };
+static_assert_ (sizeof (SimpleAddress) == 0xA8);
 
 } // namespace CTR
 } // namespace cfg

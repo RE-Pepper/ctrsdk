@@ -85,7 +85,7 @@ public:
 
                 while (true) {
                         // 1. Exclusively load the current value
-                        u.raw = LoadStoreType::LoadRegEx ((volatile s32*)(p));
+                        u.raw = LoadStoreType::LoadRegEx ((volatile StorageType*&)(p));
 
                         // Return #1: Abort path
                         // Call the functor. If it returns false/0, we clear the monitor and bail.
@@ -96,12 +96,14 @@ public:
 
                         // Return #2: Success path
                         // StoreRegEx returns 0 on SUCCESS (the exclusive monitor wasn't tripped).
-                        if (LoadStoreType::StoreRegEx (u.raw, (volatile s32*)(p)) == 0) {
+                        if (LoadStoreType::StoreRegEx (u.raw, (volatile StorageType*&)(p)) == 0) {
                                 return true;
                         }
                 }
         }
 };
+static_assert_ (sizeof (Interlocked) == 0x1);
+
 } // namespace ARMv6
 } // namespace fnd
 } // namespace nn

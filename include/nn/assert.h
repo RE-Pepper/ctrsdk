@@ -12,6 +12,14 @@
         if (!(cond)) {                                                                                 \
                 nndbgBreakWithTMessage_ (NN_DBG_BREAK_REASON_ASSERT, __BASE_FILE__, __LINE__, fmt, p); \
         }
+#define NN_ASSERT_SDK_MIN(var, min)                                                                                                                 \
+        if ((var) < (min)) {                                                                                                                        \
+                nndbgBreakWithTMessage_ (NN_DBG_BREAK_REASON_ASSERT, __BASE_FILE__, __LINE__, "%s(=%d) must be >= %s(=%d).", #var, var, #min, min); \
+        }
+#define NN_ASSERT_SDK_MAX(var, max)                                                                                                                 \
+        if ((var) > (max)) {                                                                                                                        \
+                nndbgBreakWithTMessage_ (NN_DBG_BREAK_REASON_ASSERT, __BASE_FILE__, __LINE__, "%s(=%d) must be <= %s(=%d).", #var, var, #max, max); \
+        }
 
 #define NN_ASSERT_SDK_RESULT(cond, result)                                                                                           \
         if (!(cond)) {                                                                                                               \
@@ -28,6 +36,8 @@
 #else
 #define NN_ASSERT_SDK_MSG(cond, msg)
 #define NN_ASSERT_SDK_MSGF(cond, fmt, p)
+#define NN_ASSERT_SDK_MIN(var, min)
+#define NN_ASSERT_SDK_MAX(var, max)
 #define NN_ASSERT_SDK_RESULT(cond, result)
 #define NN_ASSERT_SDK(cond)
 #define NN_PANIC_SDK(result)

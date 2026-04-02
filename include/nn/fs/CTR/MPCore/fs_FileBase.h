@@ -82,6 +82,7 @@ public:
                 Finalize ();
         }
 };
+static_assert_ (sizeof (FileBaseImpl) == 0x4);
 
 } // namespace detail
 } // namespace fs
