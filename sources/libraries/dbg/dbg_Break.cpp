@@ -12,7 +12,7 @@ namespace nn {
 namespace dbg {
 
 namespace {
-var(BreakHandler, s_pBreakHandler) = NULL;
+var(nn::dbg, s_pBreakHandler, BreakHandler) = NULL;
 } // namespace
 
 void PrintErrorMessageHeader(nndbgBreakReason reason, const char* filename, int lineno)

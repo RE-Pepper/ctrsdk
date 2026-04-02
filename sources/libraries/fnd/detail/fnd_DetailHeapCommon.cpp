@@ -11,10 +11,10 @@ namespace fnd {
 namespace detail {
 #define NN_OS_HEAP_FILL_MAX 3
 
-var(NNSFndList, sRootList);
-var(bool, sRootListInitialized) = false;
+var (nn::fnd::detail, sRootList, NNSFndList);
+var(nn::fnd::detail, sRootListInitialized, bool) = false;
 
-var(u32, sFillVals[NN_OS_HEAP_FILL_MAX]) = {
+var(nn::fnd::detail, sFillVals, u32)[NN_OS_HEAP_FILL_MAX] = {
     0xC3C3C3C3,
     0xF3F3F3F3,
     0xD3D3D3D3
@@ -41,9 +41,9 @@ NNSiFndHeapHead* FindContainHeap (NNSFndList* pList, const void* memBlock) // 76
 NNSFndList* FindListContainHeap (NNSiFndHeapHead* pHeapHd) // 115
 {
         NNSFndList*      pList = &sRootList;
-        NNSiFndHeapHead* pContainHeap = FindContainHeap(pList, pHeapHd);
+        NNSiFndHeapHead* pContainHeap = FindContainHeap(&sRootList, pHeapHd);
         if (pContainHeap != NULL) {
-            return &pContainHeap->childList;
+            pList = &pContainHeap->childList;
         }
         return pList;
 }

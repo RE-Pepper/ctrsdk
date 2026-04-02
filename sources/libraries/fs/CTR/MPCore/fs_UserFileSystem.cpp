@@ -9,10 +9,10 @@ namespace MPCore {
 namespace detail {
 
 namespace {
-var(Handle, g_FileServerHandle);
+var(nn::fs::CTR::MPCore::detail, g_FileServerHandle, Handle);
 } // namespace
 
-var(bool, s_IsLatencyEmulationEnable) = false;
+var(nn::fs::CTR::MPCore::detail, s_IsLatencyEmulationEnable, bool) = false;
 } // namespace detail
 } // namespace MPCore
 } // namespace CTR

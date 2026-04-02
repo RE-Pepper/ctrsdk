@@ -7,12 +7,12 @@ namespace srv {
 
 namespace {
 
-var(s32, s_InitializeCount) = 0;
-//var(Semaphore, s_NotificationSemaphore);
-//var(HandlerManager, s_HandlerManager);
-//var(Thread, s_NotificationDispatcher);
-var(os::CriticalSection, s_InitializeLock);
-//var(StackBuffer, s_Stack);
+var(nn::srv, s_InitializeCount, s32) = 0;
+//var(nn::srv, s_NotificationSemaphore, Semaphore);
+//var(nn::srv, s_HandlerManager, HandlerManager);
+//var(nn::srv, s_NotificationDispatcher, Thread);
+var(nn::srv, s_InitializeLock, os::CriticalSection);
+//var(nn::srv, s_Stack, StackBuffer);
 
 } // namespace
 

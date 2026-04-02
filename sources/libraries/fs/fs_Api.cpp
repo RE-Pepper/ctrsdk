@@ -10,10 +10,10 @@ namespace nn {
 namespace fs {
 
 namespace {
-var(Handle, s_FileServerSession);
+var(nn::fs, s_FileServerSession, Handle);
 
-var(int /* ? */, s_FileSystemBaseImpl);
-var(detail::FileSystemBase, s_FileSystemBase);
+var(nn::fs, s_FileSystemBaseImpl, int /* ? */);
+var(nn::fs, s_FileSystemBase, detail::FileSystemBase);
 } // namespace
 
 } // namespace fs
