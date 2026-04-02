@@ -33,34 +33,52 @@ private:
                 typedef s8 Type;
         };
 
-        // AssignFunc (size = 4)
         struct AssignFunc
         {
-                s32 m_operand;
+                T m_operand;
 
                 template <typename U>
                 AssignFunc (const U& operand)
                     : m_operand (operand)
                 {}
 
-                bool operator() (s32& other)
+                bool operator() (T& x)
                 {
+                        x = m_operand;
                         return true;
                 }
         };
-        // CompareAndSwapFunc (size = 12)
+        struct PreIncFunc
+        {
+                bool operator() (T& x)
+                {
+                        ++x;
+                        return true;
+                }
+        };
+        struct PreDecFunc
+        {
+                bool operator() (T& x)
+                {
+                        --x;
+                        return true;
+                }
+        };
         struct CompareAndSwapFunc
         {
-                s32 m_comparand;
-                s32 m_value;
-                s32 m_result;
+                T m_comparand;
+                T m_value;
+                T m_result;
 
-                CompareAndSwapFunc (s32 comparand, s32 value)
-                    : m_comparand (comparand), m_value (value)
-                {}
+                CompareAndSwapFunc (T comparand, T value) : m_comparand (comparand), m_value (value) {}
 
-                bool operator() (s32& x)
+                bool operator() (T& x)
                 {
+                        m_result = x;
+                        if (x == m_comparand) {
+                                x = m_value;
+                                return true;
+                        }
                         return false;
                 }
         };
@@ -69,19 +87,25 @@ private:
         volatile T m_v;
 
 public:
-        InterlockedVariable ()
-            : m_v ()
-        {}
+        InterlockedVariable () : m_v () {}
 
-        operator T () const
-        {
-                return m_v;
-        }
+        operator T () const { return m_v; }
 
         template <typename U>
         void operator= (U value)
         {
                 AssignFunc func (value);
+                AtomicUpdateConditional (func);
+        }
+
+        void operator++ ()
+        {
+                PreIncFunc func;
+                AtomicUpdateConditional (func);
+        }
+        void operator-- ()
+        {
+                PreDecFunc func;
                 AtomicUpdateConditional (func);
         }
 

@@ -297,43 +297,50 @@ struct Const_LM
 };
 
 // Result creators
-#define NN_MAKE_CONST_RESULT(result, level, summary, module, description) \
+#define NN_RESULT_DEF_CONST(result, level, summary, module, description) \
         typedef nn::Result::Const<(level), (summary), (module), (description)> result
-#define NN_MAKE_CONST_RANGE_RESULT(result, level, summary, module, description, a, b) \
+#define NN_RESULT_DEF_CONST_RANGE(result, level, summary, module, description, a, b) \
         typedef nn::Result::Const<(level), (summary), (module), (description), (a), (b)> result
 
-#define NN_MAKE_CONST_LSM_RESULT(result, sub, description) \
+#define NN_RESULT_DEF_CONST_LSM(result, sub, description) \
         typedef sub::Const<(description)> result
-#define NN_MAKE_CONST_LSM_SUB(sub, level, summary, module) \
+#define NN_RESULT_MAKE_CONST_LSM(sub, level, summary, module) \
         typedef ::nn::Result::Const_LSM<(level), (summary), (module)> sub
 
-#define NN_MAKE_CONST_LM_RESULT(result, sub, summary, description) \
+#define NN_RESULT_DEF_CONST_LM(result, sub, summary, description) \
         typedef sub::Const<(summary), (description)> result
-#define NN_MAKE_CONST_LM_SUB(sub, level, module) \
+#define NN_RESULT_MAKE_CONST_LM(sub, level, module) \
         typedef ::nn::Result::Const_LM<(level), (module)> sub
-
 // 565
-NN_MAKE_CONST_RESULT (ResultSuccess, Result::LEVEL_SUCCESS, Result::SUMMARY_SUCCESS, Result::MODULE_COMMON, Result::DESCRIPTION_SUCCESS);
+NN_RESULT_DEF_CONST (ResultSuccess, Result::LEVEL_SUCCESS, Result::SUMMARY_SUCCESS, Result::MODULE_COMMON, Result::DESCRIPTION_SUCCESS);
 
-// clang-format off
-static inline Result MakeInfoResult(Result::Summary summary, Result::Module module, int description) {// 585
-        return Result(Result::LEVEL_INFO, summary, module, description);
-} static inline Result MakeFatalResult(Result::Summary summary, Result::Module module, int description) {
-        return Result(Result::LEVEL_FATAL, summary, module, description);
-} static inline Result MakeResetResult(Result::Summary summary, Result::Module module, int description) {
-        return Result(Result::LEVEL_RESET, summary, module, description);
-} static inline Result MakeReinitResult(Result::Summary summary, Result::Module module, int description) {
-        return Result(Result::LEVEL_REINIT, summary, module, description);
-} static inline Result MakeUsageResult(Result::Summary summary, Result::Module module, int description) {// 593
-        return Result(Result::LEVEL_USAGE, summary, module, description);
-} static inline Result MakePermanentResult(Result::Summary summary, Result::Module module, int description) { // 595
-        return Result(Result::LEVEL_PERMANENT, summary, module, description);
-} static inline Result MakeTemporaryResult(Result::Summary summary, Result::Module module, int description) {
-        return Result(Result::LEVEL_TEMPORARY, summary, module, description);
-} static inline Result MakeStatusResult(Result::Summary summary, Result::Module module, int description) {
-        return Result(Result::LEVEL_STATUS, summary, module, description);
-}
-// clang-format on
+#define _NN_RESULT_MAKE_TYPE(name, e)                                                                             \
+        static inline Result Make##name##Result (Result::Summary summary, Result::Module module, int description) \
+        {                                                                                                         \
+                return Result (Result::LEVEL_##e, summary, module, description);                                  \
+        }
+
+_NN_RESULT_MAKE_TYPE (Info, INFO); // 585
+
+_NN_RESULT_MAKE_TYPE (Fatal, FATAL);
+
+_NN_RESULT_MAKE_TYPE (Reset, RESET);
+
+_NN_RESULT_MAKE_TYPE (Reinit, REINIT);
+
+_NN_RESULT_MAKE_TYPE (Usage, USAGE); // 593
+
+_NN_RESULT_MAKE_TYPE (Permanent, PERMANENT); // 595
+
+_NN_RESULT_MAKE_TYPE (Temporary, TEMPORARY);
+
+_NN_RESULT_MAKE_TYPE (Status, STATUS);
+
+#define NN_RESULT_DEF(Type, Res, Sum, Desc) \
+        inline Result Res ()                \
+        {                                   \
+                return Type (Sum, Desc);    \
+        }
 
 #ifdef __cplusplus
 extern "C" {

@@ -6,10 +6,10 @@ namespace cfg {
 namespace CTR {
 namespace detail {
 
-var(const char* const, PORT_NAME_CFG_USER) = "WS";
+var(nn::cfg::CTR::detail, PORT_NAME_CFG_USER, const char* const) = "WS";
 
-var(int, s_InitializeCount) = 0;
-var(bool, s_Initialized)    = false;
+var(nn::cfg::CTR::detail, s_InitializeCount, int) = 0;
+var(nn::cfg::CTR::detail, s_Initialized, bool)    = false;
 
 Result InitializeBase(Handle* pSession, const char* name) // 34
 {

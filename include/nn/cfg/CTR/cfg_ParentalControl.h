@@ -18,6 +18,7 @@ struct ParentalControlFlags
         u32 video;
         u32 rsv;
 };
+static_assert_ (sizeof (ParentalControlFlags) == 0x2C);
 
 struct ParentalControlInfo
 {
@@ -31,10 +32,11 @@ struct ParentalControlInfo
         char password[5];
         u8   rsv2[3];
 
-        unsigned short secretAnswer[65];
+        wchar_t secretAnswer[65];
 
         u8 rsv3[42];
-}
+};
+static_assert_ (sizeof (ParentalControlInfo) == 0xE8);
 
 } // namespace CTR
 } // namespace cfg

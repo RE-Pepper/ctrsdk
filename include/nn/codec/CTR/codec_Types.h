@@ -18,6 +18,7 @@ typedef struct
         u16 n1;
         u16 d1;
 } IirFilterParamHalf; // 185
+static_assert_ (sizeof (IirFilterParamHalf) == 0x6);
 
 typedef struct
 {
@@ -27,6 +28,7 @@ typedef struct
         u16 d1;
         u16 d2;
 } IirFilterParamBiquad; // 194
+static_assert_ (sizeof (IirFilterParamBiquad) == 0xA);
 
 typedef struct
 {
@@ -37,6 +39,7 @@ typedef struct
         IirFilterParamBiquad biquadD;
         IirFilterParamBiquad biquadE;
 } IirFilterParam; // 204
+static_assert_ (sizeof (IirFilterParam) == 0x38);
 
 typedef struct
 {
@@ -44,6 +47,7 @@ typedef struct
         IirFilterParamBiquad biquadB;
         IirFilterParamBiquad biquadC;
 } IirFilterParamEQ; // 220
+static_assert_ (sizeof (IirFilterParamEQ) == 0x1E);
 
 } // namespace CTR
 } // namespace codec

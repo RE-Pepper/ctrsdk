@@ -5,8 +5,8 @@
 namespace nn {
 namespace ndm {
 
-    Result Initialize();
-    Result SuspendScheduler(bool);
+Result Initialize ();
+Result SuspendScheduler (bool);
 
 } // namespace ndm
 } // namespace nn
