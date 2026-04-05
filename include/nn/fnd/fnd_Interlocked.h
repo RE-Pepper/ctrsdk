@@ -109,6 +109,13 @@ public:
                 AtomicUpdateConditional (func);
         }
 
+        T CompareAndSwap (T comprand, T value)
+        {
+                CompareAndSwapFunc f (comprand, value);
+                AtomicUpdateConditional (f);
+                return f.m_result;
+        }
+
         template <typename UpdateFunc>
         bool AtomicUpdateConditional (UpdateFunc& func)
         {

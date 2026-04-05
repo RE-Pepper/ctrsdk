@@ -1,4 +1,5 @@
 #include <nn/os/os_CriticalSection.h>
+#include <nn/os/os_Semaphore.h>
 #include <nn/srv/srv_Api.h>
 #include <nn/srv/srv_Service.h>
 
@@ -8,7 +9,7 @@ namespace srv {
 namespace {
 
 var(nn::srv, s_InitializeCount, s32) = 0;
-//var(nn::srv, s_NotificationSemaphore, Semaphore);
+var(nn::srv, s_NotificationSemaphore, os::Semaphore);
 //var(nn::srv, s_HandlerManager, HandlerManager);
 //var(nn::srv, s_NotificationDispatcher, Thread);
 var(nn::srv, s_InitializeLock, os::CriticalSection);
