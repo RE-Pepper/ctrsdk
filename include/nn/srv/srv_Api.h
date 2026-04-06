@@ -40,7 +40,22 @@ public:
 typedef EventNotificationHandlerBase<NotificationHandler*> LightEventNotificationHandler; // 122
 
 Result Initialize ();
-Result GetServiceHandle (Handle* out, const char* service, s32, u32);
+Result GetServiceHandle (Handle* pOut, const char8* pName, s32 length, bit32 flags);
+
+inline Result ReceiveNotification (bit32 pOut) // 265
+{
+        // TODO
+}
+inline Result GetServiceHandle (Handle* pOut, const char8* pName) // 308
+{
+        s32 length;
+        // TODO
+}
+inline Result TryGetServiceHandle (Handle* pOut, const char8* pName) // 319
+{
+        s32 length;
+        // TODO
+}
 
 } // namespace srv
 } // namespace nn
