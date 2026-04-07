@@ -1,35 +1,77 @@
+#include <nn/fnd/fnd_LinkedList.h>
 #include <nn/os/os_CriticalSection.h>
 #include <nn/os/os_Semaphore.h>
 #include <nn/srv/srv_Api.h>
+#include <nn/srv/srv_Result.h>
 #include <nn/srv/srv_Service.h>
 
 namespace nn {
 namespace srv {
+namespace detail {
+class HandlerManager
+{
+private:
+        fnd::IntrusiveLinkedList<s32> m_Handlers; // S32 IS A PLACEHOLDER!
+
+public:
+        Result Register (NotificationHandler* pHandler, bit32)
+        {
+                // TODO
+        }
+
+        NotificationHandler* Unregister (bit32)
+        {
+                // TODO
+        }
+
+        NotificationHandler* Find (bit32)
+        {
+                // TODO
+        }
+};
+
+struct StaticVariables
+{
+private:
+        os::CriticalSection m_InitializeLock;
+        os::Semaphore       m_NotificationSemaphore;
+        //os::Thread          m_NotificationDispatcher;
+        HandlerManager      m_HandlerManager;
+        os::CriticalSection m_ManagerLock;
+        // StackBuffer m_Stack;
+
+public:
+        StaticVariables ()
+        {
+                // TODO
+        }
+};
+}
 
 namespace {
 
 var(nn::srv, s_InitializeCount, s32) = 0;
 var(nn::srv, s_NotificationSemaphore, os::Semaphore);
-//var(nn::srv, s_HandlerManager, HandlerManager);
+var(nn::srv, s_HandlerManager, detail::HandlerManager);
 //var(nn::srv, s_NotificationDispatcher, Thread);
 var(nn::srv, s_InitializeLock, os::CriticalSection);
 //var(nn::srv, s_Stack, StackBuffer);
 
 } // namespace
 
-#ifdef NON_MATCHING
-Result GetServiceHandle (Handle* pOut, const char* pName, s32 nameLen, bit32 flags)
+Result GetServiceHandle (Handle* pOut, const char8* pName, s32 nameLen, bit32 flags)
 {
-        if (s_InitializeCount > 0) {
-                return Result (Result::LEVEL_PERMANENT, Result::SUMMARY_INVALID_STATE, Result::MODULE_NN_SRV, 1016);
+        if (s_InitializeCount <= 0) {
+                return ResultNotInitialized();
         }
         if (nameLen > 8) {
-                return Result (Result::LEVEL_PERMANENT, Result::SUMMARY_WRONG_ARGUMENT, Result::MODULE_NN_SRV, 5);
+                return ResultTooLongServiceName();
         }
 
-        return detail::Service::GetServiceHandle (pOut, pName, nameLen, flags);
+        Result result = detail::Service::GetServiceHandle (pOut, pName, nameLen, flags);
+        // TODO: var "result", so ASSERT
+        return result;
 }
-#endif
 
 /*
 

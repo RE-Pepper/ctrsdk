@@ -8,11 +8,11 @@ template <typename T>
 struct NonCopyable
 {
 protected:
-    NonCopyable();
-    ~NonCopyable();
+        NonCopyable () {}
+        ~NonCopyable () {}
 
 private:
-    NonCopyable(const NonCopyable*);
+        NonCopyable (const NonCopyable&);
 };
 
 } // namespace ADLFireWall
