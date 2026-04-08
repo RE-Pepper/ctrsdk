@@ -41,7 +41,7 @@ typedef unsigned long long bit64; // 103
 
 namespace nn {
 
-typedef bit64 ProgramId; // 126
+typedef bit64 ProgramID; // 126
 
 struct ProductInfo
 {

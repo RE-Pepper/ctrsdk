@@ -12,6 +12,7 @@ private:
 public:
         SizedEnum () {}
         SizedEnum (T e) : m_EnumValue (e) {}
+        SizedEnum (V e) : m_EnumValue (e) {}
 
         T    Get () const { return this->m_EnumValue; }
         void Set (T e) const { this->m_EnumValue = e; }

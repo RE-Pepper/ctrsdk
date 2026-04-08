@@ -1,6 +1,7 @@
 #include <nn/fnd/fnd_LinkedList.h>
 #include <nn/os/os_CriticalSection.h>
 #include <nn/os/os_Semaphore.h>
+#include <nn/os/os_Thread.h>
 #include <nn/srv/srv_Api.h>
 #include <nn/srv/srv_Result.h>
 #include <nn/srv/srv_Service.h>
@@ -35,10 +36,10 @@ struct StaticVariables
 private:
         os::CriticalSection m_InitializeLock;
         os::Semaphore       m_NotificationSemaphore;
-        //os::Thread          m_NotificationDispatcher;
+        os::Thread          m_NotificationDispatcher;
         HandlerManager      m_HandlerManager;
         os::CriticalSection m_ManagerLock;
-        // StackBuffer m_Stack;
+        os::StackBuffer<1>  m_Stack; // 1 IS A PLACEHOLDER!
 
 public:
         StaticVariables ()
@@ -53,9 +54,9 @@ namespace {
 var(nn::srv, s_InitializeCount, s32) = 0;
 var(nn::srv, s_NotificationSemaphore, os::Semaphore);
 var(nn::srv, s_HandlerManager, detail::HandlerManager);
-//var(nn::srv, s_NotificationDispatcher, Thread);
+var(nn::srv, s_NotificationDispatcher, os::Thread);
 var(nn::srv, s_InitializeLock, os::CriticalSection);
-//var(nn::srv, s_Stack, StackBuffer);
+var(nn::srv, s_Stack, os::StackBuffer<1>); // 1 IS A PLACEHOLDER!
 
 } // namespace
 
