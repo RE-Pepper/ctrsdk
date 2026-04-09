@@ -10,8 +10,9 @@ typedef struct nnHandle
 } nnHandle;
 
 namespace {
-const nnHandle INVALID_HANDLE_VALUE = { 0x0 };
-}
+const nnHandle INVALID_HANDLE_VALUE         = { 0x0 };
+const nnHandle PSEUDO_HANDLE_CURRENT_THREAD = { 0xFFFF800 };
+} // namespace
 
 #ifdef __cplusplus
 }

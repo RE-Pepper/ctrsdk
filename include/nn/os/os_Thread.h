@@ -6,8 +6,17 @@
 #include <nn/os/os_Synchronization.h>
 #include <nn/util/util_TypeTraits.h>
 
+#include "nn/os/CTR/os_ErrorHandler.h"
+#include "nn/svc/svc_Stub.h"
+
 namespace nn {
 namespace os {
+
+namespace detail {
+void InitializeThreadEnvironment ();
+s32  ConvertLibraryToSvcPriority (s32);
+s32  ConvertSvcToLibraryPriority (s32);
+} // namespace detail
 
 template <size_t Size>
 class StackBuffer
@@ -32,24 +41,48 @@ private:
         struct TypeInfo {
                 size_t size;
 
-                void (*copy) (const void*, void*);
-                void (*destroy) (void*);
-                void (*invoke) (ThreadFunc, const void*);
+                void (*copy) (const void* src, void* dsr);
+                void (*destroy) (void* p);
+                void (*invoke) (ThreadFunc f, const void* p);
 
                 template <typename T1, typename T2, typename T3>
-                void SetData (); // parameters todo
+                void SetData () // TODO: PARAMETERS
+                {
+                        size = sizeof (T1);
+                        // TODO
+                }
 
                 template <typename T1, typename T2>
-                void Copy (const void*, void*);
+                void Copy (const void* src, void* dst) { new (dst) T1 (*(const T2*)src); }
 
                 template <typename T>
-                void Destroy (void*);
+                void Destroy (void* p) {}
 
                 template <typename T>
-                void Invoke (ThreadFunc, const void*);
+                void Invoke (ThreadFunc f, const void* p) { f ((uptr)p); }
         };
 
         struct FunctionInfo;
+
+public:
+        Thread () : m_CanFinalize (true) {} // 166
+        ~Thread ();
+
+        void Finalize ();
+        void Join ();
+
+        bool  IsAlive () const;
+        void  Sleep (fnd::TimeSpan span);
+        void  Yield ();
+        bit32 GetId () const;
+        bit32 GetCurrentId () const;
+        s32   GetPriority () const;
+        s32   GetCurrentPriority () const;
+        void  ChangePriority (s32 priority);
+        void  ChangeCurrentPriority (s32 priority);
+        s32   GetIdealProcessor () const;
+        s32   GetDefaultIdealProcessor () const;
+        s32   GetCurrentProcessorNumber () const;
 
 private:
         bool m_CanFinalize;
@@ -60,56 +93,118 @@ private:
         static AutoStackManager* s_pAutoStackManager;
 
 public:
-        Thread () {}
-        ~Thread () {}
+        static Thread& GetMainThread () { return s_MainThread; }
 
-        void Finalize ();
-        void Join ();
+        void SetAutoStackManager (AutoStackManager* pManager) { s_pAutoStackManager = pManager; }
 
-        bool  IsAlive ();
-        void  Sleep (fnd::TimeSpan);
-        void  Yield ();
-        bit32 GetId ();
-        bit32 GetCurrentId ();
-        s32   GetPriority ();
-        s32   GetCurrentPriority ();
-        void  ChangePriority (s32);
-        void  ChangeCurrentPriority (s32);
-        s32   GetIdealProcessor ();
-        s32   GetDefaultIdealProcessor ();
-        s32   GetCurrentProcessorNumber ();
-
-        static Thread& GetMainThread ();
-
-        void SetAutoStackManager (AutoStackManager*);
-        s32  GetCurrentCount ();
-        s32  GetMaxCount ();
-
-        Thread (const InitializeAsCurrentTag&) {}
+        Thread (const InitializeAsCurrentTag&);
 
         void FinalizeImpl ();
 
-        Result TryInitializeAndStartImpl (TypeInfo, ThreadFunc, const void*, uptr, s32, s32, bool);
-        Result TryInitializeAndStartImplUsingAutoStack(TypeInfo, ThreadFunc, const void*, size_t, s32, s32);
+        Result TryInitializeAndStartImpl (TypeInfo typeInfo, ThreadFunc f, const void* p, uptr stackBottom, s32 priority, s32 coreNo, bool isAutoStack);
+        Result TryInitializeAndStartImplUsingAutoStack(TypeInfo typeInfo, ThreadFunc f, const void* p, size_t stackSize, s32 priority, s32 coreNo);
 
         static void OnThreadStart ();
         static void OnThreadExit ();
-        static void ThreadStart (uptr);
-        void        NoParameterFunc (void (*) ());
+        static void ThreadStart (uptr p);
+        void        NoParameterFunc (void (*f) ());
 
-        void SleepImpl (fnd::TimeSpan);
+        void SleepImpl (fnd::TimeSpan span);
 
         void* CallDestructorAndExit ();
 
         template <typename T1, typename T2, typename Thread>
-        void StartUsingAutoStack (T1, T2, size_t, s32, s32);
+        void StartUsingAutoStack (T1 f, T2 param, size_t stackSize, s32 priority, s32 coreNo);
 
         template <typename T1, typename T2, typename Stack>
-        Result TryStart (void (*func) (), T2, Stack, s32, s32);
+        Result TryStart (void (*f) (T1), T2 param, Stack* stack, s32 priority, s32 coreNo);
 
         template <typename T1, typename T2, typename Stack>
-        void Start (void (*func) (), T2, Stack&, s32, s32 = 254);
+        void Start (void (*f) (T1), T2 param, Stack& stack, s32 priority, s32 coreNo = 254);
 };
+
+void Thread::Finalize ()
+{
+        FinalizeImpl (); // 878
+        HandleObject::Finalize ();
+}
+
+Thread::~Thread ()
+{
+        FinalizeImpl (); // 884 / 963
+}
+
+bool Thread::IsAlive () const
+{
+        if (!IsValid ()) { // / 981
+                return false;
+        }
+
+        return !((Thread*)this)->WaitOne (0);
+}
+
+void Thread::Sleep (fnd::TimeSpan span)
+{
+        SleepImpl (span);
+}
+
+void Thread::Yield ()
+{
+        svc::SleepThread (0);
+}
+
+bit32 Thread::GetId () const
+{
+        bit32 ret;
+        NN_OS_HANDLE_ERROR (nn::svc::GetThreadId (&ret, GetHandle ()));
+        return ret;
+}
+
+bit32 Thread::GetCurrentId () const
+{
+        bit32 ret;
+        NN_OS_HANDLE_ERROR (nn::svc::GetThreadId (&ret, PSEUDO_HANDLE_CURRENT_THREAD));
+        return ret;
+}
+
+s32 Thread::GetPriority () const
+{
+        s32 ret;
+        NN_OS_HANDLE_ERROR (nn::svc::GetThreadPriority (&ret, GetHandle ()));
+        return ret;
+}
+
+s32 Thread::GetCurrentPriority () const
+{
+        s32 ret;
+        NN_OS_HANDLE_ERROR (nn::svc::GetThreadPriority (&ret, PSEUDO_HANDLE_CURRENT_THREAD));
+        return ret;
+}
+
+void Thread::ChangePriority (s32 priority)
+{
+        NN_OS_HANDLE_ERROR (svc::SetThreadPriority (GetHandle (), detail::ConvertLibraryToSvcPriority (priority)));
+}
+
+void Thread::ChangeCurrentPriority (s32 priority)
+{
+        NN_OS_HANDLE_ERROR (svc::SetThreadPriority (PSEUDO_HANDLE_CURRENT_THREAD, detail::ConvertLibraryToSvcPriority (priority)));
+}
+
+s32 Thread::GetIdealProcessor () const
+{
+        //TODO
+}
+
+s32 Thread::GetDefaultIdealProcessor () const
+{
+        //TODO
+}
+
+s32 Thread::GetCurrentProcessorNumber () const
+{
+        //TODO
+}
 
 } // namespace os
 } // namespace nn
