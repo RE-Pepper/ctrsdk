@@ -5,16 +5,15 @@ namespace fnd {
 
 class TimeSpan
 {
-protected:
+private:
         s64 m_NanoSeconds;
         typedef const struct ZeroOnlyTag
         {
         }* ZeroOnly;
 
+public:
         TimeSpan (ZeroOnly zero = 0) : m_NanoSeconds ((s64)zero)
         {}
-
-public:
         // Creating
         static TimeSpan FromNanoSeconds (s64 nanoSeconds)
         {

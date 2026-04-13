@@ -2,9 +2,10 @@
 
 namespace nn {
 namespace os {
+namespace CTR {
 
-class WaitObject
-{};
+void SetupThreadCppExceptionEnvironment();
 
+} // namespace CTR
 } // namespace os
 } // namespace nn

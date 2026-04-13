@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-void nnutilReferSymbol_ (const char* sym);
+void nnutilReferSymbol_(const void* sym, ...);
 
 #ifdef __cplusplus
 }

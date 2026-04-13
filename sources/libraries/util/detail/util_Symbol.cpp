@@ -2,8 +2,8 @@
 
 extern "C" {
 
-void asm (nnutilReferSymbol_) (const char* sym)
+void nnutilReferSymbol_(const void* sym __attribute__((unused)), ...)
 {
-        bx lr;
+        return;
 }
 }
