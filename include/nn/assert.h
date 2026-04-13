@@ -32,11 +32,11 @@
 //        if (nn_result_try_result.IsFailure())   \
 //        nndbgBreakWithResultMessage_(NN_DBG_BREAK_REASON_PANIC, (nnResult)(nn_result_try_result), __BASE_FILE__, __LINE__, "\"%s\" is Failure." #result)
 
-#define NN_PANIC_SDK(...)                                            \
-        nn::dbg::Printf("Panic: %s:%d\n", __BASE__FILE__, __LINE__); \
-        nn::dbg::Printf(__VA_ARGS__);                                \
-        nn::dbg::Printf("\n")                                        \
-                nn::dbg::Panic();
+#define NN_PANIC_SDK(...)                                                   \
+        nn::dbg::detail::Printf("Panic: %s:%d\n", __BASE_FILE__, __LINE__); \
+        nn::dbg::detail::Printf(__VA_ARGS__);                               \
+        nn::dbg::detail::Printf("\n");                                      \
+        nn::dbg::Panic();
 
 #else
 #define NN_ASSERT_SDK(cond)

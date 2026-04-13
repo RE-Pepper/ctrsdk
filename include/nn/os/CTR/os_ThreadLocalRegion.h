@@ -10,7 +10,7 @@ struct ThreadLocalRegion
         uptr  handlerAddress;
         uptr  handlerStackBottomAddress;
         bit8  reserved[20];
-        bit32 ehGlobalsAddr;
+        void* ehGlobalsAddr;
         bit32 ehGlobals[8];
         bit32 messageBuffer[64];
         bit32 receiveBuffer[32];

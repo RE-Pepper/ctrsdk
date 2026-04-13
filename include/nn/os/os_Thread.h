@@ -17,7 +17,7 @@ namespace os {
 namespace detail {
 s32  ConvertSvcToLibraryPriority(s32 svc);
 s32  ConvertLibraryToSvcPriority(s32 lib);
-void InitializeThreadEnvironment();
+void InitializeThreadEnvrionment();
 } // namespace detail
 
 template <size_t Size>
@@ -116,14 +116,24 @@ public:
         void* CallDestructorAndExit();
 
         template <typename T1, typename T2, typename Thread>
-        void StartUsingAutoStack(T1 f, T2 param, size_t stackSize, s32 priority, s32 coreNo);
+        void StartUsingAutoStack(T1 f, T2 param, size_t stackSize, s32 priority, s32 coreNo) // 847
+        {
+                // TODO
+        }
 
         template <typename T1, typename T2, typename Stack>
-        Result TryStart(void (*f)(T1), T2 param, Stack* stack, s32 priority, s32 coreNo);
+        Result TryStart(void (*f)(T1), T2 param, Stack* stack, s32 priority, s32 coreNo)
+        {
+                // TODO
+        }
 
         template <typename T1, typename T2, typename Stack>
-        void Start(void (*f)(T1), T2 param, Stack& stack, s32 priority, s32 coreNo = 254);
+        void Start(void (*f)(T1), T2 param, Stack& stack, s32 priority, s32 coreNo = 254)
+        {
+                // TODO
+        }
 };
+static_assert_(sizeof(Thread) == 0xC);
 
 inline void Thread::Finalize()
 {

@@ -1,3 +1,4 @@
+#include <nn/os/CTR/os_CppException.h>
 #include <nn/os/os_Thread.h>
 #include <nn/os/os_ThreadLocalStorage.h>
 #include <rt_fp.h>
@@ -20,7 +21,7 @@ s32 ConvertSvcToLibraryPriority(s32 svc) // 46
         }
 }
 
-s32 ConvertLibraryToSvcPriority(s32 lib)
+s32 ConvertLibraryToSvcPriority(s32 lib) // 68
 {
         if (lib >= 0 && lib <= 32) {
                 return 32 + lib;
@@ -37,19 +38,69 @@ s32 ConvertLibraryToSvcPriority(s32 lib)
         return -1;
 }
 
-void InitializeThreadEnvironment()
+void InitializeThreadEnvrionment() // 91
 {
         ThreadLocalStorage::ClearAllSlots();
-        //CTR::SetupThreadCppExceptionEnvironment();
+        CTR::SetupThreadCppExceptionEnvironment();
         _fp_init();
 }
 
 } // namespace detail
 
-void Thread::FinalizeImpl()
+void Thread::OnThreadStart() // 142
+{
+        // TODO
+}
+
+void Thread::OnThreadExit() // 148
+{
+        // TODO
+}
+
+void Thread::NoParameterFunc(void (*f)()) // 151
+{
+        // TODO
+}
+
+void* Thread::CallDestructorAndExit() // 164
+{
+        // TODO
+}
+
+void Thread::ThreadStart(uptr p) // 181
+{
+        // TODO
+}
+
+Result Thread::TryInitializeAndStartImpl (TypeInfo typeInfo, ThreadFunc f, const void* p, uptr stackBottom, s32 priority, s32 coreNo, bool isAutoStack) // 200
+{
+        // TODO
+}
+
+Result Thread::TryInitializeAndStartImplUsingAutoStack(TypeInfo typeInfo, ThreadFunc f, const void* p, size_t stackSize, s32 priority, s32 coreNo) // 256
+{
+        // TODO
+}
+
+void Thread::SleepImpl(fnd::TimeSpan span) // 242
+{
+        // TODO
+}
+
+Thread::Thread(const InitializeAsCurrentTag&) // 281
+{
+        // TODO
+}
+
+void Thread::FinalizeImpl() // 295
 {
         // TODO
 }
 
 } // namespace os
 } // namespace nn
+
+extern "C" {
+
+//nnosThreadYield(); nnosThreadSleep(s64 nanoSeconds);
+}

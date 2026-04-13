@@ -18,5 +18,7 @@ public:
         static void ClearAllSlots();
 };
 
+static_assert_(sizeof(ThreadLocalStorage) == 0x4);
+
 } // namespace os
 } // namespace nn
