@@ -6,46 +6,62 @@
 #include <nn/srv/srv_Result.h>
 #include <nn/srv/srv_Service.h>
 
+#include "nn/Result.h"
+#include "nn/assert.h"
+
 namespace nn {
 namespace srv {
 namespace detail {
 class HandlerManager
 {
 private:
-        fnd::IntrusiveLinkedList<s32> m_Handlers; // S32 IS A PLACEHOLDER!
+        fnd::IntrusiveLinkedList<NotificationHandler> m_Handlers;
 
 public:
-        Result Register (NotificationHandler* pHandler, bit32)
+        /*HandlerManager::Register 40,42
+          HandlerManager::Find 65*/
+
+        Result Register(NotificationHandler* pHandler, bit32 message)
         {
-                // TODO
+                NN_ASSERT_SDK_POINTER(pHandler);                 // 40
+                NN_ASSERT_SDK(message != 0);                     // 41
+                NN_ASSERT_SDK(pHandler->m_AttachedMessage == 0); // 42
+
+                pHandler->m_AttachedMessage = message;
+                m_Handlers.PushBack(pHandler);
+
+                return ResultSuccess();
         }
 
-        NotificationHandler* Unregister (bit32)
+        NotificationHandler* Unregister(bit32 message)
         {
-                // TODO
+                NN_ASSERT_SDK(message != 0);
+
+                NotificationHandler* p = Find(message);
+                if (p != NULL) {
+                        m_Handlers.Erase(p);
+                        p->m_AttachedMessage = 0;
+                }
+
+                return p;
         }
 
-        NotificationHandler* Find (bit32)
+        NotificationHandler* Find(bit32 message)
         {
-                // TODO
+                NN_ASSERT_SDK(message != 0); // 65
+                for (NotificationHandler* i = m_Handlers.GetFront(); i && i->m_AttachedMessage != message; i = m_Handlers.GetFront())
+                        ;
         }
 };
 
 struct StaticVariables
 {
-private:
-        os::CriticalSection m_InitializeLock;
-        os::Semaphore       m_NotificationSemaphore;
-        os::Thread          m_NotificationDispatcher;
-        HandlerManager      m_HandlerManager;
-        os::CriticalSection m_ManagerLock;
-        os::StackBuffer<1>  m_Stack; // 1 IS A PLACEHOLDER!
-
-public:
-        StaticVariables ()
-        {
-                // TODO
-        }
+        os::CriticalSection  m_InitializeLock;
+        os::Semaphore        m_NotificationSemaphore;
+        os::Thread           m_NotificationDispatcher;
+        HandlerManager       m_HandlerManager;
+        os::CriticalSection  m_ManagerLock;
+        os::StackBuffer<512> m_Stack;
 };
 }
 
@@ -56,9 +72,19 @@ var(nn::srv, s_NotificationSemaphore, os::Semaphore);
 var(nn::srv, s_HandlerManager, detail::HandlerManager);
 var(nn::srv, s_NotificationDispatcher, os::Thread);
 var(nn::srv, s_InitializeLock, os::CriticalSection);
-var(nn::srv, s_Stack, os::StackBuffer<1>); // 1 IS A PLACEHOLDER!
+var(nn::srv, s_Stack, os::StackBuffer<512>);
 
 } // namespace
+
+/*
+
+...RegisterNotificationHandler?
+
+anon DispatcherThread 111
+
+Initialize 167
+Finalite 183,193
+*/
 
 Result GetServiceHandle (Handle* pOut, const char8* pName, s32 nameLen, bit32 flags)
 {
@@ -70,21 +96,9 @@ Result GetServiceHandle (Handle* pOut, const char8* pName, s32 nameLen, bit32 fl
         }
 
         Result result = detail::Service::GetServiceHandle (pOut, pName, nameLen, flags);
-        // TODO: var "result", so ASSERT
+        NN_ASSERT_SDK_WARN_RESULT(result, "Failed to open service \"%s\"\n", pName); // 368
         return result;
 }
-
-/*
-
-HandlerManager::Register 40,42
-HandlerManager::Find 65
-
-anon DispatcherThread 111
-
-Initialize 167
-GetServiceHandle 368
-
-*/
 
 } // namespace srv
 } // namespace nn

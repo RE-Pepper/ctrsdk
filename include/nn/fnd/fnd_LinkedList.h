@@ -11,22 +11,22 @@ template <typename T, typename U = void>
 class IntrusiveLinkedList
 {
 public:
-        IntrusiveLinkedList ()
-            : m_Head (NULL)
+        IntrusiveLinkedList()
+            : m_Head(NULL)
         {}
 
         class Item;
 
 private:
-        bool  IsEmpty () { m_Head == NULL; } // 95
+        bool  IsEmpty() { m_Head == NULL; } // 95
         Item* m_Head;
 
-        static void ClearLinks (Item* p)
+        inline static void ClearLinks(Item* p)
         {
                 p->m_NextLink     = NULL;
                 p->m_PreviousLink = NULL;
         }
-        static void InsertBefore (Item* p, Item* q)
+        inline static void InsertBefore(Item* p, Item* q)
         {
                 q->m_NextLink                 = p;
                 p->m_PreviousLink->m_NextLink = q;
@@ -37,109 +37,107 @@ private:
 public:
         class Item : nn::util::ADLFireWall::NonCopyable<Item>
         {
+                friend IntrusiveLinkedList;
+
         private:
                 Item* m_PreviousLink;
                 Item* m_NextLink;
 
         public:
-                Item ()
-                    : m_PreviousLink (NULL),
-                      m_NextLink (NULL)
+                inline Item()
+                    : m_PreviousLink(NULL),
+                      m_NextLink(NULL)
                 {} // 217
-                ~Item ()
+                inline ~Item()
                 {
-                        NN_ASSERT_SDK (!m_PreviousLink && !m_NextLink) // 218
+                        NN_ASSERT_SDK(!m_PreviousLink && !m_NextLink) // 218
                 }
         };
 
-        void PushBack (T* p)
+        inline void PushBack(T* p)
         {
-                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress ()); // 244
-                NN_ASSERT_SDK (p);                                 // 245
+                NN_ASSERT_SDK_RESULT(p, ResultInvalidAddress()); // 244
+                NN_ASSERT_SDK(p);                                // 245
                 Item* pNode = (Item*)p;
-                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0 ()); // 247
-                NN_ASSERT_SDK (!pNode->m_PreviousLink);                          // 248
-                NN_ASSERT_SDK (!pNode->m_NextLink);                              // 249
+                NN_ASSERT_SDK_RESULT(!pNode->m_PreviousLink, ResultFndUnk0()); // 247
+                NN_ASSERT_SDK(!pNode->m_PreviousLink);                         // 248
+                NN_ASSERT_SDK(!pNode->m_NextLink);                             // 249
 
-                if (IsEmpty ()) {
+                if (IsEmpty()) {
                         p->m_PreviousLink = p;
                         p->m_NextLink     = p;
                         this->m_Head      = p;
                 } else {
-                        InsertBefore (this->m_Head);
+                        InsertBefore(this->m_Head);
                 }
         } // 243
 
-        void PushFront (T* p)
+        inline void PushFront(T* p)
         {
-                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress ());
-                NN_ASSERT_SDK (p);
+                NN_ASSERT_SDK_RESULT(p, ResultInvalidAddress());
+                NN_ASSERT_SDK(p);
                 Item* pNode = (Item*)p;
-                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0 ());
-                NN_ASSERT_SDK (!pNode->m_PreviousLink);
-                NN_ASSERT_SDK (!pNode->m_NextLink);
+                NN_ASSERT_SDK_RESULT(!pNode->m_PreviousLink, ResultFndUnk0());
+                NN_ASSERT_SDK(!pNode->m_PreviousLink);
+                NN_ASSERT_SDK(!pNode->m_NextLink);
 
-                if (IsEmpty ()) {
+                if (IsEmpty()) {
                         p->m_PreviousLink = p;
                         p->m_NextLink     = p;
                 } else {
-                        InsertBefore (this->m_Head);
+                        InsertBefore(this->m_Head);
                 }
                 this->m_Head = p;
         } // 263
 
-        T* GetFront ()
+        inline T* GetFront()
         {
-                if (m_Head == NULL) {
-                        return NULL;
-                }
-
-                return m_Head[-1].m_NextLink;
+                return (T*)m_Head[-1].m_NextLink;
 
         } // 284
 
-        T* GetBack ()
+        inline T* GetBack()
         {
-                if (IsEmpty ()) {
+                if (IsEmpty()) {
                         return NULL;
                 }
 
-                return m_Head->m_PrevieousLink;
+                return (T*)m_Head->m_PrevieousLink;
         } // 289
 
-        T* GetNext (T* p)
+        inline T* GetNext(T* p)
         {
-                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress ());
-                NN_ASSERT_SDK (p);
+                NN_ASSERT_SDK_RESULT(p, ResultInvalidAddress());
+                NN_ASSERT_SDK(p);
                 Item* pNode = (Item*)p;
-                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0 ());
-                NN_ASSERT_SDK (!pNode->m_PreviousLink);
-                NN_ASSERT_SDK (!pNode->m_NextLink);
+                NN_ASSERT_SDK_RESULT(!pNode->m_PreviousLink, ResultFndUnk0());
+                NN_ASSERT_SDK(!pNode->m_PreviousLink);
+                NN_ASSERT_SDK(!pNode->m_NextLink);
 
-                if (GetBack () == p) {
+                if (GetBack() == p) {
                         return NULL;
                 } else {
                         return p->m_NextLink;
                 }
         } // 346
 
-        T* GetPrevious (T* p)
+        inline T* GetPrevious(T* p)
         {
-                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress ());
-                NN_ASSERT_SDK (p);
+                NN_ASSERT_SDK_RESULT(p, ResultInvalidAddress());
+                NN_ASSERT_SDK(p);
                 Item* pNode = (Item*)p;
-                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0 ());
-                NN_ASSERT_SDK (!pNode->m_PreviousLink);
-                NN_ASSERT_SDK (!pNode->m_NextLink);
+                NN_ASSERT_SDK_RESULT(!pNode->m_PreviousLink, ResultFndUnk0());
+                NN_ASSERT_SDK(!pNode->m_PreviousLink);
+                NN_ASSERT_SDK(!pNode->m_NextLink);
 
-                if (GetFront () == p) {
+                if (GetFront() == p) {
                         return NULL;
                 } else {
                         return p->m_PreviousLink;
                 }
         } // 330
 
-        void Insert (T* p, T* q)
+        inline void Insert(T* p, T* q)
         {
                 q->m_NextLink                 = p;
                 p->m_PreviousLink->m_NextLink = q;
@@ -147,14 +145,14 @@ public:
                 p->m_PreviousLink             = q;
         } // 236
 
-        void Erase (T* p)
+        inline void Erase(T* p)
         {
-                NN_ASSERT_SDK_RESULT (p, ResultInvalidAddress ());
-                NN_ASSERT_SDK (p);
+                NN_ASSERT_SDK_RESULT(p, ResultInvalidAddress());
+                NN_ASSERT_SDK(p);
                 Item* pNode = (Item*)p;
-                NN_ASSERT_SDK_RESULT (!pNode->m_PreviousLink, ResultFndUnk0 ());
-                NN_ASSERT_SDK (!pNode->m_PreviousLink);
-                NN_ASSERT_SDK (!pNode->m_NextLink);
+                NN_ASSERT_SDK_RESULT(!pNode->m_PreviousLink, ResultFndUnk0());
+                NN_ASSERT_SDK(!pNode->m_PreviousLink);
+                NN_ASSERT_SDK(!pNode->m_NextLink);
 
                 if (p->m_PreviousLink == p) {
                         this->m_Head = NULL;
@@ -165,17 +163,17 @@ public:
                         p->m_NextLink->m_PreviousLink = p->m_PreviousLink;
                         p->m_PreviousLink->m_NextLink = p->m_NextLink;
                 }
-                ClearLinks (p);
+                ClearLinks(p);
         }
 
-        void Clear (T*)
+        inline void Clear(T*)
         {
                 if (this->m_Head) {
                         Item* p = this->m_Head;
                         while (p) {
                                 Item* q = p;
                                 p       = p->m_NextLink;
-                                ClearLinks (q);
+                                ClearLinks(q);
                         }
                         this->m_Head = NULL;
                 }

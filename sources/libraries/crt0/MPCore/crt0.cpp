@@ -37,6 +37,9 @@ extern "C" void __asm __ctr_start()
 
 extern "C" void nninitLocale()
 {
+#if 0
+        NN_REFER_MODULE(s_DebugIndicator);
+#endif
         NN_REFER_MODULE(s_SdkVersion);
         NN_REFER_MODULE(s_FirmwareVersion);
 
