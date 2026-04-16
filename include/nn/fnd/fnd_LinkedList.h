@@ -18,7 +18,7 @@ public:
         class Item;
 
 private:
-        bool  IsEmpty() { m_Head == NULL; } // 95
+        bool  IsEmpty() { return m_Head == NULL; } // 95
         Item* m_Head;
 
         inline static void ClearLinks(Item* p)
@@ -68,7 +68,7 @@ public:
                         p->m_NextLink     = p;
                         this->m_Head      = p;
                 } else {
-                        InsertBefore(this->m_Head);
+                        InsertBefore(this->m_Head, pNode);
                 }
         } // 243
 
@@ -85,7 +85,7 @@ public:
                         p->m_PreviousLink = p;
                         p->m_NextLink     = p;
                 } else {
-                        InsertBefore(this->m_Head);
+                        InsertBefore(this->m_Head, pNode);
                 }
                 this->m_Head = p;
         } // 263

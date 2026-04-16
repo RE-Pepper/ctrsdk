@@ -59,13 +59,9 @@ struct ProductInfo
 
 #endif
 
-#ifndef NN_PACK
-#define NN_PACK __attribute__ ((__packed__))
-#endif
-
-#ifndef NN_UNUSED
-#define NN_UNUSED __attribute__ ((unused))
-#endif
+#define NN_PACK __attribute__((__packed__))
+#define NN_UNUSED __attribute__((unused))
+#define NN_PAD_24 int : 24
 
 // this file is included by project_global.h
 

@@ -4,8 +4,10 @@
 
 namespace nn {
 namespace err {
-    namespace CTR {
-        void ThrowFatalErr(Result);
-    } // namespace CTR
+namespace CTR {
+
+void ThrowFatalErr(Result result);
+
+}
 } // namespace err
 } // namespace nn

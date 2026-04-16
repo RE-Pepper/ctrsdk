@@ -10,21 +10,24 @@ namespace detail {
 class Service
 {
 private:
-        Handle s_Session;
+        static Handle s_Session;
 
 public:
-        static Result RegisterClient ();
-        static Result EnableNotification ();
-        static Result RegisterService (Handle*, const char8*, s32, s32);
-        static Result UnregisterService (const char8*, s32);
-        static Result GetServiceHandle (Handle*, const char8*, s32, bit32);
-        static Result RegisterObject (Handle, const char8*, s32);
-        static Result UnregisterObject (const char8*, s32);
-        static Result GetNamedObject (Handle*, const char8*, s32, bool);
-        static Result Subscribe (bit32);
-        static Result Unsubscribe (bit32);
-        static Result PublishToSubscriber (bit32, bit32, bit32);
-        static Result IsServiceRegistered (bool*, const char8*, s32);
+        Service() {}
+
+        static Result RegisterClient();
+        static Result EnableNotification(Handle* pSemaphore);
+        static Result RegisterService(Handle*, const char8*, s32, s32);
+        static Result UnregisterService(const char8*, s32);
+        static Result GetServiceHandle(Handle* pOut, const char8* name, s32 nameLen, bit32 flags);
+        static Result RegisterObject(Handle handle, const char8* name, s32 nameLen);
+        static Result UnregisterObject(const char8* name, s32);
+        static Result GetNamedObject(Handle* pOut, const char8* name, s32 nameLen, bool wait);
+        static Result Subscribe(bit32);
+        static Result Unsubscribe(bit32);
+        static Result ReceiveNotification(bit32* pOut);
+        static Result PublishToSubscriber(bit32, bit32, bit32);
+        static Result IsServiceRegistered(bool*, const char8*, s32);
 };
 
 } // namespace detail

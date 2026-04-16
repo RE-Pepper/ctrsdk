@@ -12,16 +12,14 @@
 namespace nn {
 namespace srv {
 namespace detail {
+
 class HandlerManager
 {
 private:
         fnd::IntrusiveLinkedList<NotificationHandler> m_Handlers;
 
 public:
-        /*HandlerManager::Register 40,42
-          HandlerManager::Find 65*/
-
-        Result Register(NotificationHandler* pHandler, bit32 message)
+        inline Result Register(NotificationHandler* pHandler, bit32 message)
         {
                 NN_ASSERT_SDK_POINTER(pHandler);                 // 40
                 NN_ASSERT_SDK(message != 0);                     // 41
@@ -33,7 +31,7 @@ public:
                 return ResultSuccess();
         }
 
-        NotificationHandler* Unregister(bit32 message)
+        inline NotificationHandler* Unregister(bit32 message)
         {
                 NN_ASSERT_SDK(message != 0);
 
@@ -46,7 +44,7 @@ public:
                 return p;
         }
 
-        NotificationHandler* Find(bit32 message)
+        inline NotificationHandler* Find(bit32 message)
         {
                 NN_ASSERT_SDK(message != 0); // 65
                 for (NotificationHandler* i = m_Handlers.GetFront(); i && i->m_AttachedMessage != message; i = m_Handlers.GetFront())
@@ -61,7 +59,7 @@ struct StaticVariables
         os::Thread           m_NotificationDispatcher;
         HandlerManager       m_HandlerManager;
         os::CriticalSection  m_ManagerLock;
-        os::StackBuffer<512> m_Stack;
+        os::StackBuffer<512> m_Stack; // 1024 in some debug ver, TODO check
 };
 }
 
@@ -86,8 +84,13 @@ Initialize 167
 Finalite 183,193
 */
 
+Result RegisterNotificationHandler(NotificationHandler* pHandler, bit32 message)
+{ // 303
+    return s_HandlerManager.Register(pHandler, message);
+}
+
 Result GetServiceHandle (Handle* pOut, const char8* pName, s32 nameLen, bit32 flags)
-{
+{ // 357
         if (s_InitializeCount <= 0) {
                 return ResultNotInitialized();
         }
